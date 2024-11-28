@@ -5,14 +5,15 @@ import re
 import serial.tools.list_ports
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import QTimer
-from PyQt5.QtSerialPort import QSerialPortInfo
+from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
 from hci_platform import Ui_Form
 import serial
 
 
 # 继承两个父类
 def find_files(directory='', extersion=''):
-    return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(directory)) for f in fn if f.endswith(extersion)]
+    return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(directory)) for f in fn if
+            f.endswith(extersion)]
 
 
 def find_serial_port():
@@ -27,13 +28,14 @@ def find_serial_port():
 class Hci_PlatForm_Ui(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
-        self.setupUi(self)
 
-        self.port_list = 0
-        self.com = 0
+        self.setupUi(self)
 
         # 获取当前程序执行路径
         self.program_path = os.path.realpath(os.path.dirname(sys.argv[0]))
+
+        # 初始化
+        self.com = QSerialPort()
 
         # 添加创建comboBox_ini元素
         ini_files = find_files(self.program_path, ".ini")
@@ -50,6 +52,10 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.connect_signals_slots()
         self.timer.start(1000)
 
+    def reset(self):
+        self.com.close()
+        self.com.setPortName("")
+
     def connect_signals_slots(self):
         """连接信号与槽函数"""
         # 创建btn_ini单击事件处理信号
@@ -63,10 +69,27 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
 
     def openDevice(self):
         text = self.btn_openDevice.text()
+        portName = self.comboBox_device.currentText()
+        portBaud = int(self.comboBox_serialBaud.currentText())
         if text == "打开设备":
             self.btn_openDevice.setText("关闭设备")
             self.comboBox_device.setEnabled(False)
+            if not portName == "":
+                self.com.setPortName(portName)
+                self.com.setBaudRate(portBaud)
+                try:
+                    if not self.com.open(QSerialPort.ReadWrite):
+                        QMessageBox.critical(self, '错误', "设备打开失败!")
+                        return
+                except:
+                    QMessageBox.critical(self, '错误', "设备打开失败!")
+                    return
+
+            else:
+                QMessageBox.information(None, "警告", "请插入设备!")
         else:
+            if not portName == "":
+                self.com.close()
             self.btn_openDevice.setText("打开设备")
             self.comboBox_device.setEnabled(True)
 
@@ -80,13 +103,13 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
                 self.comboBox_device.addItem(port_name)
         else:
             if not self.comboBox_device.currentText() in [port.portName() for port in current_ports]:
-                com = serial.Serial(self.comboBox_device.currentText(), self.comboBox_serialBaud.currentText())
-                if not com == "":
-                    if com.is_open:
-                        com.close()
+                if self.com.portName() == self.comboBox_device.currentText():
+                    if self.com.isOpen():
+                        self.reset()
+
                         self.openDevice()
-                self.comboBox_device.removeItem(self.comboBox_device.currentIndex())
-                QMessageBox.information(self, '消息', '串口已拔出', QMessageBox.Yes)
+                    self.comboBox_device.removeItem(self.comboBox_device.currentIndex())
+                    QMessageBox.information(self, '消息', '串口已拔出', QMessageBox.Yes)
 
             for port in current_ports:
                 port_name = port.portName()
