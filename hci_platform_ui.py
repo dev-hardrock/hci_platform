@@ -66,6 +66,24 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.comboBox_device.activated.connect(self.refresh_serial_ports)
         # 创建btn_openDevice单击事件处理信号
         self.btn_openDevice.clicked.connect(self.openDevice)
+        # 创建发生指令单击事件处理信号
+        self.btn_cmd.clicked.connect(self.send_hci_command)
+        # 创建清空指令单击事件处理信号
+        self.btn_clear.clicked.connect(self.clear_hci_command)
+        return
+
+    def clear_hci_command(self):
+        self.Edit_cmd.clear()
+        return
+
+    def send_hci_command(self):
+        tx_data = self.Edit_cmd.toPlainText()
+        self.Edit_log.append(tx_data)
+        self.Edit_log.ensureCursorVisible()
+        if self.com.isOpen():
+            self.com.write(tx_data)
+            self.com.flush(QSerialPort.Output)
+        return
 
     def openDevice(self):
         text = self.btn_openDevice.text()
@@ -77,6 +95,10 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
             if not portName == "":
                 self.com.setPortName(portName)
                 self.com.setBaudRate(portBaud)
+                self.com.setDataBits(QSerialPort.Data8)
+                self.com.setParity(QSerialPort.NoParity)
+                self.com.setStopBits(QSerialPort.OneStop)
+                self.com.setFlowControl(QSerialPort.NoFlowControl)
                 try:
                     if not self.com.open(QSerialPort.ReadWrite):
                         QMessageBox.critical(self, '错误', "设备打开失败!")
