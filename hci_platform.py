@@ -23,6 +23,7 @@ class Ui_Form(object):
         self.btn_ini.setObjectName("btn_ini")
         self.Edit_ini = QtWidgets.QTextEdit(Form)
         self.Edit_ini.setGeometry(QtCore.QRect(10, 40, 300, 400))
+        self.Edit_ini.setReadOnly(True)
         self.Edit_ini.setObjectName("Edit_ini")
         self.Edit_cmd = QtWidgets.QTextEdit(Form)
         self.Edit_cmd.setGeometry(QtCore.QRect(10, 450, 300, 200))

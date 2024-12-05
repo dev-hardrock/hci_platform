@@ -4,8 +4,9 @@ import sys
 import re
 import serial.tools.list_ports
 from PyQt5.QtWidgets import QWidget, QMessageBox
-from PyQt5.QtCore import QTimer
+from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
+from PyQt5.QtGui import QTextCursor, QCursor
 from hci_platform import Ui_Form
 import serial
 
@@ -35,12 +36,23 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.program_path = os.path.realpath(os.path.dirname(sys.argv[0]))
 
         # 初始化
+        self.isMousePressed = False
         self.com = QSerialPort()
+
+        # 开启鼠标跟踪
+        self.Edit_ini.viewport().setCursor(QCursor(Qt.ArrowCursor))
 
         # 添加创建comboBox_ini元素
         ini_files = find_files(self.program_path, ".ini")
         for file in ini_files:
             self.comboBox_ini.addItem(os.path.basename(file))
+        item = self.comboBox_ini.currentText()
+        if not item == "":
+            file = QFile(item)
+            if file.open(QIODevice.ReadOnly):
+                content = file.readAll()
+                self.Edit_ini.setText(content.data().decode())
+                file.close()
 
         # 添加串口波特率
         self.comboBox_serialBaud.addItem("115200")
@@ -70,11 +82,58 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.btn_cmd.clicked.connect(self.send_hci_command)
         # 创建清空指令单击事件处理信号
         self.btn_clear.clicked.connect(self.clear_hci_command)
+        # 创建创建EditIni鼠标移动信号
+        self.Edit_ini.mouseMoveEvent = self.cmdMouseMoveEvent
+        # 创建创建EditIni鼠标按下信号
+        self.Edit_ini.mousePressEvent = self.cmdMousePressEvent
+        # 创建EditIni鼠标松开信号
+        # self.Edit_ini.mouseReleaseEvent = self.cmdMouseReleaseEvent
+        # 创建EditIni鼠标双击信号
+        self.Edit_ini.mouseDoubleClickEvent = self.cmdmouseDoubleClickEvent
+
+    def cmdmouseDoubleClickEvent(self, event):
         return
+
+    def cmdMouseReleaseEvent(self, event):
+        self.isMousePressed = False
+
+    def cmdMousePressEvent(self, event):
+        # 获取光标
+        cursor = self.Edit_ini.cursorForPosition(event.pos())
+        # 获取光标所在行数
+        line = cursor.block().blockNumber()
+        print(line)
+        # 检查点击是否在最后一行之后的空白区域
+        text_height = 0
+        for i in range(self.Edit_ini.document().blockCount()):
+            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(self.Edit_ini.document().findBlockByNumber(i))
+            text_height += block_geometry.height()
+        if event.pos().y() <= text_height:
+            if line >= 0:
+                cursor.select(cursor.LineUnderCursor)
+                self.Edit_ini.setTextCursor(cursor)
+        self.isMousePressed = True
+
+    def cmdMouseMoveEvent(self, event):
+        if self.isMousePressed:
+            # 获取当前文本光标位置
+            cursor = self.Edit_ini.cursorForPosition(event.pos())
+            # 文本光标移动到当前行的起始位置
+            line = cursor.block().blockNumber()
+            print(line)
+            # 检查点击是否在最后一行之后的空白区域
+            text_height = 0
+            for i in range(self.Edit_ini.document().blockCount()):
+                block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(
+                    self.Edit_ini.document().findBlockByNumber(i))
+                text_height += block_geometry.height()
+            if event.pos().y() <= text_height:
+                if line >= 0:
+                    cursor.select(cursor.LineUnderCursor)
+                    self.Edit_ini.setTextCursor(cursor)
 
     def clear_hci_command(self):
         self.Edit_cmd.clear()
-        return
 
     def send_hci_command(self):
         tx_data = self.Edit_cmd.toPlainText()
@@ -83,7 +142,6 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         if self.com.isOpen():
             self.com.write(tx_data)
             self.com.flush(QSerialPort.Output)
-        return
 
     def openDevice(self):
         text = self.btn_openDevice.text()
@@ -140,7 +198,11 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
 
     def handle_ini_index_changed(self):
         item = self.comboBox_ini.currentText()
-        self.Edit_ini.setText(item)
+        file = QFile(item)
+        if file.open(QIODevice.ReadOnly):
+            content = file.readAll()
+            self.Edit_ini.setText(content.data().decode())
+            file.close()
 
     def open_ini(self):
         # 使用QFileDialog打开文件夹选择对话框
