@@ -87,7 +87,7 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         # 创建创建EditIni鼠标按下信号
         self.Edit_ini.mousePressEvent = self.cmdMousePressEvent
         # 创建EditIni鼠标松开信号
-        # self.Edit_ini.mouseReleaseEvent = self.cmdMouseReleaseEvent
+        self.Edit_ini.mouseReleaseEvent = self.cmdMouseReleaseEvent
         # 创建EditIni鼠标双击信号
         self.Edit_ini.mouseDoubleClickEvent = self.cmdmouseDoubleClickEvent
 
