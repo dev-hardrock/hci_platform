@@ -7,6 +7,7 @@ from hci_platform_ui import Hci_PlatForm_Ui
 
 if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle('windows')
     hci_plateform = Hci_PlatForm_Ui()
     hci_plateform.show()
     sys.exit(app.exec())
