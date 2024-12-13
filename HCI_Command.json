@@ -46,7 +46,7 @@
     {
       "command": "HCI_Inquiry_Cancel",
       "ocf": "0x0002",
-      "Parameters": [
+      "parameters": [
       ]
     }
   ]

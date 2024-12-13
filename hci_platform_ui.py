@@ -96,6 +96,33 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
 
     def cmdMouseReleaseEvent(self, event):
         self.isMousePressed = False
+        cursor = self.Edit_ini.cursorForPosition(event.pos())
+        # 获取光标所在行数
+        line = cursor.block().blockNumber()
+        print(line)
+        # 检查点击是否在最后一行之后的空白区域
+        text_height = 0
+        for i in range(self.Edit_ini.document().blockCount()):
+            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(self.Edit_ini.document().findBlockByNumber(i))
+            text_height += block_geometry.height()
+        if event.pos().y() <= text_height:
+            if line >= 0:
+                cmd = cursor.block().text()
+                json_file = self.comboBox_ini.currentText()
+                if not json_file == "":
+                    with open(json_file, 'r', encoding='utf-8') as file:
+                        hci_info = json.load(file)
+                    for command in hci_info['commands']:
+                        if command['command'] == cmd:
+                            print(len(command['parameters']))
+                            if len(command['parameters']) != 0:
+                                self.Edit_cmd.clear()
+                                self.Edit_cmd.append("{")
+                                for arg in command['parameters']:
+                                    self.Edit_cmd.append('  "' + arg['name'] + '": 0')
+                                self.Edit_cmd.append("}")
+
+
 
     def cmdMousePressEvent(self, event):
         extra_selections = []
