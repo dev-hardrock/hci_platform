@@ -3,10 +3,11 @@ import subprocess
 import sys
 import re
 import serial.tools.list_ports
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
-from PyQt5.QtGui import QCursor, QTextCharFormat, QColor, QTextCursor, QTextFormat
+from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
 from hci_platform import Ui_Form
 import json
 import serial
@@ -32,6 +33,9 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         super().__init__()
 
         self.setupUi(self)
+        _translate = QtCore.QCoreApplication.translate
+        self.setWindowTitle(_translate("Hci_PlatForm", "Hci_PlatForm"))
+        self.setWindowIcon(QIcon("./bt.svg"))
 
         # 获取当前程序执行路径
         self.program_path = os.path.realpath(os.path.dirname(sys.argv[0]))
@@ -90,6 +94,11 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.Edit_ini.mouseReleaseEvent = self.cmdMouseReleaseEvent
         # 创建EditIni鼠标双击信号
         self.Edit_ini.mouseDoubleClickEvent = self.cmdmouseDoubleClickEvent
+        # 创建Edit_cmd内容改变信号
+        self.Edit_cmd.textChanged.connect(self.cmdHexDataShow)
+
+    def cmdHexDataShow(self):
+        self.Edit_cmdData.setText("changed")
 
     def cmdmouseDoubleClickEvent(self, event):
         return
@@ -115,8 +124,8 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
                     for command in hci_info['commands']:
                         if command['command'] == cmd:
                             print(len(command['parameters']))
+                            self.Edit_cmd.clear()
                             if len(command['parameters']) != 0:
-                                self.Edit_cmd.clear()
                                 self.Edit_cmd.append("{")
                                 for arg in command['parameters']:
                                     self.Edit_cmd.append('  "' + arg['name'] + '": 0')
