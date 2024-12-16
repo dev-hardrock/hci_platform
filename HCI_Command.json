@@ -1,0 +1,53 @@
+{
+  "profile": {
+    "name": "hci",
+    "version":"1.0"
+  },
+  "commands": [
+    {
+      "command": "HCI_Inquiry",
+      "ocf": "0x0001",
+      "parameters": [
+        {
+          "name": "LAP",
+          "dataType": {
+            "type": "int",
+            "specs": {
+              "min": "0x9E8B00",
+              "max": "0x9E8B3F",
+              "description": ""
+            }
+          }
+        },
+        {
+          "name": "Inquiry_Length",
+          "dataType": {
+            "type": "int",
+            "specs": {
+              "min": "0x01",
+              "max": "0x30",
+              "description": "在停止查询前指定的最大时间，单位 1.28s"
+            }
+          }
+        },
+        {
+          "name": "Num_Responses",
+          "dataType": {
+            "type": "int",
+            "specs": {
+              "min": "0x00",
+              "max": "0xFF",
+              "description": "在停止查询前扫描上报的最大条数， 0 表示无显示，"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "command": "HCI_Inquiry_Cancel",
+      "ocf": "0x0002",
+      "parameters": [
+      ]
+    }
+  ]
+}

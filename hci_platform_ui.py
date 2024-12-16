@@ -6,8 +6,9 @@ import serial.tools.list_ports
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
-from PyQt5.QtGui import QTextCursor, QCursor
+from PyQt5.QtGui import QCursor, QTextCharFormat, QColor, QTextCursor, QTextFormat
 from hci_platform import Ui_Form
+import json
 import serial
 
 
@@ -43,16 +44,15 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.Edit_ini.viewport().setCursor(QCursor(Qt.ArrowCursor))
 
         # 添加创建comboBox_ini元素
-        ini_files = find_files(self.program_path, ".ini")
+        ini_files = find_files(self.program_path, ".json")
         for file in ini_files:
             self.comboBox_ini.addItem(os.path.basename(file))
         item = self.comboBox_ini.currentText()
         if not item == "":
-            file = QFile(item)
-            if file.open(QIODevice.ReadOnly):
-                content = file.readAll()
-                self.Edit_ini.setText(content.data().decode())
-                file.close()
+            with open(item, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            for command in data['commands']:
+                self.Edit_ini.append(command['command'])
 
         # 添加串口波特率
         self.comboBox_serialBaud.addItem("115200")
@@ -96,9 +96,6 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
 
     def cmdMouseReleaseEvent(self, event):
         self.isMousePressed = False
-
-    def cmdMousePressEvent(self, event):
-        # 获取光标
         cursor = self.Edit_ini.cursorForPosition(event.pos())
         # 获取光标所在行数
         line = cursor.block().blockNumber()
@@ -110,16 +107,55 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
             text_height += block_geometry.height()
         if event.pos().y() <= text_height:
             if line >= 0:
-                cursor.select(cursor.LineUnderCursor)
-                self.Edit_ini.setTextCursor(cursor)
+                cmd = cursor.block().text()
+                json_file = self.comboBox_ini.currentText()
+                if not json_file == "":
+                    with open(json_file, 'r', encoding='utf-8') as file:
+                        hci_info = json.load(file)
+                    for command in hci_info['commands']:
+                        if command['command'] == cmd:
+                            print(len(command['parameters']))
+                            if len(command['parameters']) != 0:
+                                self.Edit_cmd.clear()
+                                self.Edit_cmd.append("{")
+                                for arg in command['parameters']:
+                                    self.Edit_cmd.append('  "' + arg['name'] + '": 0')
+                                self.Edit_cmd.append("}")
+
+
+
+    def cmdMousePressEvent(self, event):
+        extra_selections = []
+        selection = self.Edit_ini.ExtraSelection()
+        # 获取光标
+        selection.cursor = self.Edit_ini.cursorForPosition(event.pos())
+        # 获取光标所在行数
+        line = selection.cursor.block().blockNumber()
+        print(line)
+        # 检查点击是否在最后一行之后的空白区域
+        text_height = 0
+        for i in range(self.Edit_ini.document().blockCount()):
+            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(self.Edit_ini.document().findBlockByNumber(i))
+            text_height += block_geometry.height()
+        if event.pos().y() <= text_height:
+            if line >= 0:
+                line_color = QColor(0, 120, 215)
+                selection.format.setBackground(line_color)
+                selection.format.setForeground(QColor("white"))
+                selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+                selection.cursor.clearSelection()
+                extra_selections.append(selection)
+                self.Edit_ini.setExtraSelections(extra_selections)
         self.isMousePressed = True
 
     def cmdMouseMoveEvent(self, event):
         if self.isMousePressed:
+            extra_selections = []
+            selection = self.Edit_ini.ExtraSelection()
             # 获取当前文本光标位置
-            cursor = self.Edit_ini.cursorForPosition(event.pos())
+            selection.cursor = self.Edit_ini.cursorForPosition(event.pos())
             # 文本光标移动到当前行的起始位置
-            line = cursor.block().blockNumber()
+            line = selection.cursor.block().blockNumber()
             print(line)
             # 检查点击是否在最后一行之后的空白区域
             text_height = 0
@@ -129,8 +165,13 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
                 text_height += block_geometry.height()
             if event.pos().y() <= text_height:
                 if line >= 0:
-                    cursor.select(cursor.LineUnderCursor)
-                    self.Edit_ini.setTextCursor(cursor)
+                    line_color = QColor(0, 120, 215)
+                    selection.format.setBackground(line_color)
+                    selection.format.setForeground(QColor("white"))
+                    selection.format.setProperty(QTextFormat.FullWidthSelection, True)
+                    selection.cursor.clearSelection()
+                    extra_selections.append(selection)
+                    self.Edit_ini.setExtraSelections(extra_selections)
 
     def clear_hci_command(self):
         self.Edit_cmd.clear()
