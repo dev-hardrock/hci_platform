@@ -1,2 +1,14 @@
 # hci_platform
-这是一个基于python pyqt5 开发的hci host上位机，用于跟hci controller通信，验证hci command和evenet。
+
+## Installation
+
+1. Clone the repository:
+    ```cmd
+    https://github.com/dev-hardrock/hci_platform.git
+    cd hci_platform
+2. Install dependencies:
+    ```cmd
+    pip install -r requirements.txt
+3. Run the application:
+    ```cmd
+    python main.py
