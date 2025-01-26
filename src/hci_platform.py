@@ -1,9 +1,8 @@
 import os
 import subprocess
 import sys
-import serial.tools.list_ports
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication
+from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
@@ -33,26 +32,21 @@ def convert_hex_string(hex_string):
     result = ' '.join(byte_list)
     return result
 
-
-def find_serial_port():
-    port_lists = []
-    ports = serial.tools.list_ports.comports()
-    for port, desc, hwid in sorted(ports):
-        port_lists.append(port)
-    return port_lists
-
-
 class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def __init__(self):
         super().__init__()
 
         self.setupUi(self)
+
+        # 重命名上位机名称
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("Hci_PlatForm", "Hci_PlatForm"))
+
+        # 设置上位机图标
         self.setWindowIcon(QIcon("./resources/images/bt.svg"))
 
         # 获取当前程序执行路径
-        self.program_path = os.path.realpath(os.path.dirname(sys.argv[0]))
+        self.topdir = os.path.realpath(os.path.dirname(sys.argv[0]))
 
         # 初始化
         self.isMousePressed = False
@@ -61,28 +55,41 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 开启鼠标跟踪
         self.Edit_CmdList.viewport().setCursor(QCursor(Qt.ArrowCursor))
 
-        # 添加创建comboBox_ini元素
-        ini_files = find_files(self.program_path, ".json")
-        for file in ini_files:
-            self.ComboBox_TestFile.addItem(os.path.basename(file))
-        item = self.ComboBox_TestFile.currentText()
-        if not item == "":
-            with open(item, 'r', encoding='utf-8') as file:
-                data = json.load(file)
-            for command in data['hci_commands']:
-                if command['identifier'] == "Link Control Commands":
-                    self.Edit_CmdList.append("--------  " + command['identifier'] + "  --------")
-                    for cmd in command['command']:
-                        self.Edit_CmdList.append(cmd['name'])
-        # 添加串口波特率
-        self.ComboBox_SerialBaudList.addItem("115200")
-        self.ComboBox_SerialBaudList.addItem("921600")
+        # 查找上位机同级目录下测试文件
+        self.ComboBox_TestFile_Init()
+
+        # 加载测试文件信息
+        self.ComboBox_TestFile_Load()
+
+        # 初始化串口波特率配置
+        self.ComboBox_SerialBaudList_Init()
 
         # 定义一个定时器，1s定时检测串口列表
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh_serial_ports)
         self.connect_signals_slots()
         self.timer.start(1000)
+
+    def ComboBox_TestFile_Load(self):
+        if not self.cur_file == "":
+            with open(self.cur_file, 'r', encoding='utf-8') as file:
+                cmdlist = json.load(file)
+            self.Edit_CmdList.clear()
+            for command in cmdlist['hci_commands']:
+                if command['identifier'] == "Link Control Commands":
+                    self.Edit_CmdList.append("--------  " + command['identifier'] + "  --------")
+                    for cmd in command['command']:
+                        self.Edit_CmdList.append(cmd['name'])
+
+    def ComboBox_TestFile_Init(self):
+        jsonfiles = find_files(self.topdir, ".json")
+        for file in jsonfiles:
+            self.ComboBox_TestFile.addItem(os.path.basename(file))
+        self.cur_file = self.ComboBox_TestFile.currentText()
+
+    def ComboBox_SerialBaudList_Init(self):
+        self.ComboBox_SerialBaudList.addItem("115200")
+        self.ComboBox_SerialBaudList.addItem("921600")
 
     def reset(self):
         self.com.close()
@@ -91,17 +98,17 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def connect_signals_slots(self):
         """连接信号与槽函数"""
         # 创建Btn_OpenFile单击事件处理信号
-        self.Btn_OpenFile.clicked.connect(self.open_ini)
+        self.Btn_OpenFile.clicked.connect(self.open_file)
         # 创建ComboBox_TestFile信号
-        self.ComboBox_TestFile.currentIndexChanged.connect(self.handle_ini_index_changed)
+        self.ComboBox_TestFile.currentIndexChanged.connect(self.ComboBox_TestFile_index_update)
         # 创建ComboBox_DeviceList处理信号
         self.ComboBox_DeviceList.activated.connect(self.refresh_serial_ports)
         # 创建Btn_OpenDevice单击事件处理信号
         self.Btn_OpenDevice.clicked.connect(self.openDevice)
         # 创建Btn_SendCmd单击事件处理信号
-        self.Btn_SendCmd.clicked.connect(self.send_hci_command)
+        self.Btn_SendCmd.clicked.connect(self.send_hci_message)
         # 创建Btn_Clear指令单击事件处理信号
-        self.Btn_Clear.clicked.connect(self.clear_hci_command)
+        self.Btn_Clear.clicked.connect(self.Edit_CmdDetail_Clear)
         # 创建Edit_CmdList鼠标移动信号
         self.Edit_CmdList.mouseMoveEvent = self.cmdMouseMoveEvent
         # 创建Edit_CmdList鼠标按下信号
@@ -111,9 +118,9 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 创建Edit_CmdList鼠标双击信号
         self.Edit_CmdList.mouseDoubleClickEvent = self.cmdmouseDoubleClickEvent
         # 创建Edit_CmdProperty内容改变信号
-        self.Edit_CmdProperty.textChanged.connect(self.cmdHexDataShow)
+        self.Edit_CmdProperty.textChanged.connect(self.Edit_CmdDetailShow)
 
-    def cmdHexDataShow(self):
+    def Edit_CmdDetailShow(self):
         text_content = self.Edit_CmdProperty.toPlainText()
         # print(text_content)
         try:
@@ -240,10 +247,10 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                     extra_selections.append(selection)
                     self.Edit_CmdList.setExtraSelections(extra_selections)
 
-    def clear_hci_command(self):
+    def Edit_CmdDetail_Clear(self):
         self.Edit_CmdDetail.clear()
 
-    def send_hci_command(self):
+    def send_hci_message(self):
         tx_data = self.Edit_CmdDetail.toPlainText()
         self.Edit_Log.append(tx_data)
         self.Edit_Log.ensureCursorVisible()
@@ -310,19 +317,24 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 if port_name not in [self.ComboBox_DeviceList.itemText(i) for i in range(self.ComboBox_DeviceList.count())]:
                     self.ComboBox_DeviceList.addItem(port_name)
 
-    def handle_ini_index_changed(self):
-        item = self.ComboBox_TestFile.currentText()
-        file = QFile(item)
+    def ComboBox_TestFile_index_update(self):
+        file_name = self.ComboBox_TestFile.currentText()
+        file = QFile(file_name)
         if file.open(QIODevice.ReadOnly):
-            content = file.readAll()
-            self.Edit_CmdList.setText(content.data().decode())
-            file.close()
+            self.cur_file = file_name
+            self.ComboBox_TestFile_Load()
+        else:
+            QMessageBox.warning(self, '警告', '文件打开失败', QMessageBox.Yes)
 
-    def open_ini(self):
+    def open_file(self):
         # 使用QFileDialog打开文件夹选择对话框
-        filename = self.program_path + "\\" + self.ComboBox_TestFile.currentText()
+        filename = self.topdir + "\\" + self.ComboBox_TestFile.currentText()
         # print(filename)
         subprocess.Popen(['notepad.exe', filename])
+
+    def closeEvent(self, event):
+        """关闭串口时确保关闭串口"""
+        return super().closeEvent(event)
 
 
 
