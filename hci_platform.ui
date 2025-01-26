@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Form</class>
- <widget class="QWidget" name="Form">
+ <class>Hci_PlatForm</class>
+ <widget class="QWidget" name="Hci_PlatForm">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,9 +11,9 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>hci_platform</string>
   </property>
-  <widget class="QLabel" name="label_debug">
+  <widget class="QLabel" name="Label_Debug">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -26,20 +26,20 @@
     <string>调试功能</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_ini">
+  <widget class="QPushButton" name="Btn_OpenFile">
    <property name="geometry">
     <rect>
      <x>200</x>
      <y>10</y>
-     <width>50</width>
+     <width>60</width>
      <height>25</height>
     </rect>
    </property>
    <property name="text">
-    <string>ini</string>
+    <string>打开文件</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="Edit_ini">
+  <widget class="QTextEdit" name="Edit_CmdList">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -52,7 +52,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QTextEdit" name="Edit_cmd">
+  <widget class="QTextEdit" name="Edit_CmdProperty">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -62,7 +62,7 @@
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_cmd">
+  <widget class="QPushButton" name="Btn_SendCmd">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -75,7 +75,7 @@
     <string>发送指令</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_clear">
+  <widget class="QPushButton" name="Btn_Clear">
    <property name="geometry">
     <rect>
      <x>130</x>
@@ -88,7 +88,7 @@
     <string>清空</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="Edit_log">
+  <widget class="QTextEdit" name="Edit_Log">
    <property name="geometry">
     <rect>
      <x>320</x>
@@ -135,7 +135,7 @@
     </palette>
    </property>
   </widget>
-  <widget class="QLabel" name="label_device">
+  <widget class="QLabel" name="Label_Device">
    <property name="geometry">
     <rect>
      <x>320</x>
@@ -148,7 +148,7 @@
     <string>选择设备</string>
    </property>
   </widget>
-  <widget class="QPushButton" name="btn_openDevice">
+  <widget class="QPushButton" name="Btn_OpenDevice">
    <property name="geometry">
     <rect>
      <x>510</x>
@@ -161,7 +161,7 @@
     <string>打开设备</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_serialBaud">
+  <widget class="QLabel" name="Label_SerialBaud">
    <property name="geometry">
     <rect>
      <x>320</x>
@@ -174,7 +174,7 @@
     <string>串口波特率</string>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_serialBaud">
+  <widget class="QComboBox" name="ComboBox_SerialBaudList">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -187,7 +187,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_ini">
+  <widget class="QComboBox" name="ComboBox_TestFile">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -200,7 +200,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QComboBox" name="comboBox_device">
+  <widget class="QComboBox" name="ComboBox_DeviceList">
    <property name="geometry">
     <rect>
      <x>390</x>
@@ -213,7 +213,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QTextEdit" name="Edit_cmdData">
+  <widget class="QTextEdit" name="Edit_CmdDetail">
    <property name="geometry">
     <rect>
      <x>10</x>
