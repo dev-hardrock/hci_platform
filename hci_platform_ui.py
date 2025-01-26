@@ -1,7 +1,6 @@
 import os
 import subprocess
 import sys
-import re
 import serial.tools.list_ports
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QMessageBox
@@ -19,11 +18,26 @@ def find_files(directory='', extersion=''):
             f.endswith(extersion)]
 
 
+def convert_hex_string(hex_string):
+    if hex_string.startswith("0x"):
+        hex_string = hex_string[2:]
+    if len(hex_string) % 2 != 0:
+        hex_string = '0' + hex_string
+    # 将16进制字符串转成整数
+    value = int(hex_string, 16)
+    byte_list = []
+    while value > 0:
+        byte = value & 0xff
+        byte_list.append(f"{byte:02x}")
+        value >>= 8
+    result = ' '.join(byte_list)
+    return result
+
+
 def find_serial_port():
     port_lists = []
     ports = serial.tools.list_ports.comports()
     for port, desc, hwid in sorted(ports):
-        # port_lists.append(port + " " + re.sub(r'\(.*?\)', '', desc))
         port_lists.append(port)
     return port_lists
 
@@ -55,9 +69,11 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         if not item == "":
             with open(item, 'r', encoding='utf-8') as file:
                 data = json.load(file)
-            for command in data['commands']:
-                self.Edit_ini.append(command['command'])
-
+            for command in data['hci_commands']:
+                if command['identifier'] == "Link Control Commands":
+                    self.Edit_ini.append("--------  " + command['identifier'] + "  --------")
+                    for cmd in command['command']:
+                        self.Edit_ini.append(cmd['name'])
         # 添加串口波特率
         self.comboBox_serialBaud.addItem("115200")
         self.comboBox_serialBaud.addItem("921600")
@@ -98,7 +114,33 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         self.Edit_cmd.textChanged.connect(self.cmdHexDataShow)
 
     def cmdHexDataShow(self):
-        self.Edit_cmdData.setText("changed")
+        text_content = self.Edit_cmd.toPlainText()
+        # print(text_content)
+        try:
+            # 字符串格式转换成json格式
+            json_data = json.loads(text_content)
+            # 获取所有键值， 键值个数正常为1
+            all_keys = json_data.keys()
+            if len(all_keys) == 1:
+                json_file = self.comboBox_ini.currentText()
+                if not json_file == "":
+                    with open(json_file, 'r', encoding='utf-8') as file:
+                        hci_info = json.load(file)
+                    for identifier in hci_info['hci_commands']:
+                        for command in identifier['command']:
+                            for key in all_keys:
+                                if command['name'] == key:
+                                    self.Edit_cmdData.clear()
+                                    opcode = convert_hex_string(command['opcode'])
+                                    if opcode is None:
+                                        return
+                                    # params =
+                                    print(opcode)
+                                    # message += hex_string
+                                    # self.Edit_cmdData.append()
+                                    self.Edit_cmdData.append(opcode)
+        except json.JSONDecodeError as e:
+            return
 
     def cmdmouseDoubleClickEvent(self, event):
         return
@@ -108,11 +150,12 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         cursor = self.Edit_ini.cursorForPosition(event.pos())
         # 获取光标所在行数
         line = cursor.block().blockNumber()
-        print(line)
+        # print(line)
         # 检查点击是否在最后一行之后的空白区域
         text_height = 0
         for i in range(self.Edit_ini.document().blockCount()):
-            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(self.Edit_ini.document().findBlockByNumber(i))
+            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(
+                self.Edit_ini.document().findBlockByNumber(i))
             text_height += block_geometry.height()
         if event.pos().y() <= text_height:
             if line >= 0:
@@ -121,17 +164,31 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
                 if not json_file == "":
                     with open(json_file, 'r', encoding='utf-8') as file:
                         hci_info = json.load(file)
-                    for command in hci_info['commands']:
-                        if command['command'] == cmd:
-                            print(len(command['parameters']))
-                            self.Edit_cmd.clear()
-                            if len(command['parameters']) != 0:
-                                self.Edit_cmd.append("{")
-                                for arg in command['parameters']:
-                                    self.Edit_cmd.append('  "' + arg['name'] + '": 0')
-                                self.Edit_cmd.append("}")
-
-
+                    for identifier in hci_info['hci_commands']:
+                        for command in identifier['command']:
+                            if command['name'] == cmd:
+                                # self.Edit_cmd.clear()
+                                if 'parameters' in command:
+                                    data = {}
+                                    for parameter in command['parameters']:
+                                        data[parameter['name']] = 0
+                                    json_data = {command['name']: data}
+                                    json_array = json.dumps(json_data, indent=4)
+                                    # print(json_array)
+                                    """
+                                    Output example: {
+                                        "HCI_Inquiry":{
+                                            "LAP": 0,
+                                            "Inquiry_Length": 0,
+                                            "Num_Responses": 0
+                                        }
+                                    }
+                                    """
+                                    self.Edit_cmd.setText(json_array)
+                                else:
+                                    json_data = {command['name']: 0}
+                                    json_array = json.dumps(json_data, indent=4)
+                                    self.Edit_cmd.setText(json_array)
 
     def cmdMousePressEvent(self, event):
         extra_selections = []
@@ -140,11 +197,12 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
         selection.cursor = self.Edit_ini.cursorForPosition(event.pos())
         # 获取光标所在行数
         line = selection.cursor.block().blockNumber()
-        print(line)
+        # print(line)
         # 检查点击是否在最后一行之后的空白区域
         text_height = 0
         for i in range(self.Edit_ini.document().blockCount()):
-            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(self.Edit_ini.document().findBlockByNumber(i))
+            block_geometry = self.Edit_ini.document().documentLayout().blockBoundingRect(
+                self.Edit_ini.document().findBlockByNumber(i))
             text_height += block_geometry.height()
         if event.pos().y() <= text_height:
             if line >= 0:
@@ -165,7 +223,7 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
             selection.cursor = self.Edit_ini.cursorForPosition(event.pos())
             # 文本光标移动到当前行的起始位置
             line = selection.cursor.block().blockNumber()
-            print(line)
+            # print(line)
             # 检查点击是否在最后一行之后的空白区域
             text_height = 0
             for i in range(self.Edit_ini.document().blockCount()):
@@ -257,5 +315,5 @@ class Hci_PlatForm_Ui(QWidget, Ui_Form):
     def open_ini(self):
         # 使用QFileDialog打开文件夹选择对话框
         filename = self.program_path + "\\" + self.comboBox_ini.currentText()
-        print(filename)
+        # print(filename)
         subprocess.Popen(['notepad.exe', filename])

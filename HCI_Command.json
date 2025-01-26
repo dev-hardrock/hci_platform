@@ -1,53 +1,35 @@
 {
-  "profile": {
-    "name": "hci",
-    "version":"1.0"
-  },
-  "commands": [
+  "hci_commands": [
     {
-      "command": "HCI_Inquiry",
-      "ocf": "0x0001",
-      "parameters": [
+      "identifier": "Link Control Commands",
+      "OGF": "0x01",
+      "command": [
         {
-          "name": "LAP",
-          "dataType": {
-            "type": "int",
-            "specs": {
-              "min": "0x9E8B00",
-              "max": "0x9E8B3F",
-              "description": ""
+          "name": "HCI_Inquiry",
+          "opcode": "0x0401",
+          "parameters": [
+            {
+              "name": "LAP",
+              "type": "uint24"
+            },
+            {
+              "name": "Inquiry_Length",
+              "type": "uint8"
+            },
+            {
+              "name": "Num_Responses",
+              "type": "uint8"
             }
-          }
+          ]
         },
         {
-          "name": "Inquiry_Length",
-          "dataType": {
-            "type": "int",
-            "specs": {
-              "min": "0x01",
-              "max": "0x30",
-              "description": "在停止查询前指定的最大时间，单位 1.28s"
-            }
-          }
-        },
-        {
-          "name": "Num_Responses",
-          "dataType": {
-            "type": "int",
-            "specs": {
-              "min": "0x00",
-              "max": "0xFF",
-              "description": "在停止查询前扫描上报的最大条数， 0 表示无显示，"
-            }
-          }
+          "name": "HCI_Inquiry_Cancel",
+          "opcode": "0x0402"
         }
       ]
-    },
-    {
-      "command": "HCI_Inquiry_Cancel",
-      "ocf": "0x0002",
-      "parameters": [
-      ]
     }
+  ],
+  "hci_events": [
+
   ]
 }
