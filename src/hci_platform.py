@@ -4,34 +4,15 @@ import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
-from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
+from src.serialmanager import *
+from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
 from generated.hci_platform import Ui_Hci_PlatForm
+from src.utils import *
 import json
-import serial
 
 
 # 继承两个父类
-def find_files(directory='', extersion=''):
-    return [os.path.join(dp, f) for dp, dn, fn in os.walk(os.path.expanduser(directory)) for f in fn if
-            f.endswith(extersion)]
-
-
-def convert_hex_string(hex_string):
-    if hex_string.startswith("0x"):
-        hex_string = hex_string[2:]
-    if len(hex_string) % 2 != 0:
-        hex_string = '0' + hex_string
-    # 将16进制字符串转成整数
-    value = int(hex_string, 16)
-    byte_list = []
-    while value > 0:
-        byte = value & 0xff
-        byte_list.append(f"{byte:02x}")
-        value >>= 8
-    result = ' '.join(byte_list)
-    return result
-
 class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def __init__(self):
         super().__init__()
@@ -50,7 +31,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
         # 初始化
         self.isMousePressed = False
-        self.com = QSerialPort()
+        self.com = SerialManager(callback=None)
 
         # 开启鼠标跟踪
         self.Edit_CmdList.viewport().setCursor(QCursor(Qt.ArrowCursor))
@@ -71,6 +52,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         self.timer.start(1000)
 
     def ComboBox_TestFile_Load(self):
+        """加载指令文件"""
         if not self.cur_file == "":
             with open(self.cur_file, 'r', encoding='utf-8') as file:
                 cmdlist = json.load(file)
@@ -82,18 +64,16 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                         self.Edit_CmdList.append(cmd['name'])
 
     def ComboBox_TestFile_Init(self):
+        """查找可用的指令文件"""
         jsonfiles = find_files(self.topdir, ".json")
         for file in jsonfiles:
             self.ComboBox_TestFile.addItem(os.path.basename(file))
         self.cur_file = self.ComboBox_TestFile.currentText()
 
     def ComboBox_SerialBaudList_Init(self):
+        """初始化串口波特率列表"""
         self.ComboBox_SerialBaudList.addItem("115200")
         self.ComboBox_SerialBaudList.addItem("921600")
-
-    def reset(self):
-        self.com.close()
-        self.com.setPortName("")
 
     def connect_signals_slots(self):
         """连接信号与槽函数"""
@@ -106,7 +86,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 创建Btn_OpenDevice单击事件处理信号
         self.Btn_OpenDevice.clicked.connect(self.openDevice)
         # 创建Btn_SendCmd单击事件处理信号
-        self.Btn_SendCmd.clicked.connect(self.send_hci_message)
+        self.Btn_SendCmd.clicked.connect(self.Btn_SendCmd_Click)
         # 创建Btn_Clear指令单击事件处理信号
         self.Btn_Clear.clicked.connect(self.Edit_CmdDetail_Clear)
         # 创建Edit_CmdList鼠标移动信号
@@ -121,6 +101,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         self.Edit_CmdProperty.textChanged.connect(self.Edit_CmdDetailShow)
 
     def Edit_CmdDetailShow(self):
+        """16进制指令数据显示"""
         text_content = self.Edit_CmdProperty.toPlainText()
         # print(text_content)
         try:
@@ -149,10 +130,15 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         except json.JSONDecodeError as e:
             return
 
+    def Edit_CmdDetail_Clear(self):
+        self.Edit_CmdDetail.clear()
+
     def cmdmouseDoubleClickEvent(self, event):
+        """指令列表窗口鼠标双击事件处理函数"""
         return
 
     def cmdMouseReleaseEvent(self, event):
+        """指令列表窗口鼠标释放事件处理函数"""
         self.isMousePressed = False
         cursor = self.Edit_CmdList.cursorForPosition(event.pos())
         # 获取光标所在行数
@@ -198,6 +184,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                                     self.Edit_CmdProperty.setText(json_array)
 
     def cmdMousePressEvent(self, event):
+        """指令列表窗口鼠标按下事件处理函数"""
         extra_selections = []
         selection = self.Edit_CmdList.ExtraSelection()
         # 获取光标
@@ -223,6 +210,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         self.isMousePressed = True
 
     def cmdMouseMoveEvent(self, event):
+        """指令列表窗口鼠标移动事件处理函数"""
         if self.isMousePressed:
             extra_selections = []
             selection = self.Edit_CmdList.ExtraSelection()
@@ -247,56 +235,40 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                     extra_selections.append(selection)
                     self.Edit_CmdList.setExtraSelections(extra_selections)
 
-    def Edit_CmdDetail_Clear(self):
-        self.Edit_CmdDetail.clear()
-
-    def send_hci_message(self):
-        tx_data = self.Edit_CmdDetail.toPlainText()
-        self.Edit_Log.append(tx_data)
+    def Btn_SendCmd_Click(self):
+        """发送指令按键单机事件处理函数"""
+        data = self.Edit_CmdDetail.toPlainText()
+        self.Edit_Log.append(data)
         self.Edit_Log.ensureCursorVisible()
-        if self.com.isOpen():
-            self.com.write(tx_data)
-            self.com.flush(QSerialPort.Output)
+        if self.com.is_open():
+            self.com.send_data(data)
 
     def openDevice(self):
+        """打开设备按键单击处理函数"""
         text = self.Btn_OpenDevice.text()
         portName = self.ComboBox_DeviceList.currentText()
         portBaud = int(self.ComboBox_SerialBaudList.currentText())
         if text == "打开设备":
-            self.Btn_OpenDevice.setText("关闭设备")
-            self.ComboBox_DeviceList.setEnabled(False)
             if not portName == "":
-                self.com.setPortName(portName)
-                self.com.setBaudRate(portBaud)
-                self.com.setDataBits(QSerialPort.Data8)
-                self.com.setParity(QSerialPort.NoParity)
-                self.com.setStopBits(QSerialPort.OneStop)
-                self.com.setFlowControl(QSerialPort.NoFlowControl)
                 try:
-                    if not self.com.open(QSerialPort.ReadWrite):
-                        QMessageBox.critical(self, '错误', "设备打开失败!")
-                        self.Btn_OpenDevice.setText("打开设备")
-                        self.ComboBox_DeviceList.setEnabled(True)
-                        return
-                except:
-                    QMessageBox.critical(self, '错误', "设备打开失败!")
+                    self.com.open(portName, portBaud)
+                    self.Btn_OpenDevice.setText("关闭设备")
+                    self.ComboBox_DeviceList.setEnabled(False)
+                except Exception as e:
+                    QMessageBox.warning(self, '错误', str(e))
                     self.Btn_OpenDevice.setText("打开设备")
                     self.ComboBox_DeviceList.setEnabled(True)
-                    return
-
             else:
-                QMessageBox.information(None, "警告", "请插入设备!")
-                self.Btn_OpenDevice.setText("打开设备")
-                self.ComboBox_DeviceList.setEnabled(True)
+                QMessageBox.warning(None, "警告", "请插入设备!")
         else:
             if not portName == "":
                 self.com.close()
-            self.Btn_OpenDevice.setText("打开设备")
-            self.ComboBox_DeviceList.setEnabled(True)
+                self.Btn_OpenDevice.setText("打开设备")
+                self.ComboBox_DeviceList.setEnabled(True)
 
     def refresh_serial_ports(self):
         """刷新可用串口号列表并填充到ComboBox中"""
-        current_ports = QSerialPortInfo.availablePorts()
+        current_ports = get_available_port()
         if self.ComboBox_DeviceList.currentText() == "":
             # 添加comboBox_ini
             for port in current_ports:
@@ -304,14 +276,12 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 self.ComboBox_DeviceList.addItem(port_name)
         else:
             if not self.ComboBox_DeviceList.currentText() in [port.portName() for port in current_ports]:
-                if self.com.portName() == self.ComboBox_DeviceList.currentText():
-                    if self.com.isOpen():
-                        self.reset()
-
+                if self.com.com.portName() == self.ComboBox_DeviceList.currentText():
+                    if self.com.is_open():
+                        self.com.close()
                         self.openDevice()
                     self.ComboBox_DeviceList.removeItem(self.ComboBox_DeviceList.currentIndex())
                     QMessageBox.information(self, '消息', '串口已拔出', QMessageBox.Yes)
-
             for port in current_ports:
                 port_name = port.portName()
                 if port_name not in [self.ComboBox_DeviceList.itemText(i) for i in range(self.ComboBox_DeviceList.count())]:
