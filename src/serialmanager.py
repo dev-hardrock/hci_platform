@@ -1,7 +1,7 @@
 from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
 from PyQt5.QtCore import QObject
 
-class SerialManger(QObject):
+class SerialManager(QObject):
     def __init__(self):
         super().__init__()
         self.com = None
@@ -13,7 +13,7 @@ class SerialManger(QObject):
 
     def open(self, port, baudrate=115200, callback=None):
         """打开串口"""
-        if self.com and self.com.isOpen():
+        if self.is_open():
             raise Exception("Serial port already open.")    # 手动抛出异常
         self.com = QSerialPort()
         # 设置串口属性
@@ -32,12 +32,12 @@ class SerialManger(QObject):
 
         # 打开串口
         if not self.com.open(QSerialPort.ReadWrite):
-            raise Exception("Failt to open serial port.")    # 手动抛出异常
+            raise Exception("Failed to open serial port.")    # 手动抛出异常
         return
 
     def close(self):
         """关闭串口"""
-        if self.com and self.com.isOpen():
+        if self.is_open():
             self.com.close()
 
     def is_open(self):
@@ -47,13 +47,19 @@ class SerialManger(QObject):
 
     def read_data(self):
         """当有数据可读时触发,读取当前缓冲区内所有数据"""
+        # return bytes
         data = self.com.readAll()
-        text = data.data().decode('utf-8')
+        # text = data.data().decode('utf-8')
         if self.callback:
-            self.callback(text)
+            self.callback(data)
 
-    def send_data(self, tx_data):
+    def send_data(self, data):
         """发送数据"""
-        if self.com.isOpen():
-            self.com.write(tx_data)
+        chunk_size = 1024
+        for i in range(0, len(data), chunk_size):
+            chunk = data[i:i + chunk_size]
+            bytes_written = self.com.write(chunk)
+            if bytes_written == -1:
+                print("Error writing to serial port")
+                break
             self.com.flush(QSerialPort.Output)
