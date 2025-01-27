@@ -1,4 +1,3 @@
-import os
 import subprocess
 import sys
 from PyQt5 import QtCore
@@ -17,6 +16,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def __init__(self):
         super().__init__()
 
+        self.cur_file = None
         self.setupUi(self)
 
         # 重命名上位机名称
@@ -127,7 +127,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                                     # message += hex_string
                                     # self.Edit_cmdData.append()
                                     self.Edit_CmdDetail.append(opcode)
-        except json.JSONDecodeError as e:
+        except json.JSONDecodeError:
             return
 
     def Edit_CmdDetail_Clear(self):
@@ -143,7 +143,6 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         cursor = self.Edit_CmdList.cursorForPosition(event.pos())
         # 获取光标所在行数
         line = cursor.block().blockNumber()
-        # print(line)
         # 检查点击是否在最后一行之后的空白区域
         text_height = 0
         for i in range(self.Edit_CmdList.document().blockCount()):
@@ -167,7 +166,6 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                                         data[parameter['name']] = 0
                                     json_data = {command['name']: data}
                                     json_array = json.dumps(json_data, indent=4)
-                                    # print(json_array)
                                     """
                                     Output example: {
                                         "HCI_Inquiry":{
@@ -185,13 +183,21 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
     def cmdMousePressEvent(self, event):
         """指令列表窗口鼠标按下事件处理函数"""
+        self.CmdHighLight(event)
+        self.isMousePressed = True
+
+    def cmdMouseMoveEvent(self, event):
+        """指令列表窗口鼠标移动事件处理函数"""
+        if self.isMousePressed:
+            self.CmdHighLight(event)
+
+    def CmdHighLight(self, event):
         extra_selections = []
         selection = self.Edit_CmdList.ExtraSelection()
-        # 获取光标
+        # 获取当前文本光标位置
         selection.cursor = self.Edit_CmdList.cursorForPosition(event.pos())
-        # 获取光标所在行数
+        # 文本光标移动到当前行的起始位置
         line = selection.cursor.block().blockNumber()
-        # print(line)
         # 检查点击是否在最后一行之后的空白区域
         text_height = 0
         for i in range(self.Edit_CmdList.document().blockCount()):
@@ -207,33 +213,6 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 selection.cursor.clearSelection()
                 extra_selections.append(selection)
                 self.Edit_CmdList.setExtraSelections(extra_selections)
-        self.isMousePressed = True
-
-    def cmdMouseMoveEvent(self, event):
-        """指令列表窗口鼠标移动事件处理函数"""
-        if self.isMousePressed:
-            extra_selections = []
-            selection = self.Edit_CmdList.ExtraSelection()
-            # 获取当前文本光标位置
-            selection.cursor = self.Edit_CmdList.cursorForPosition(event.pos())
-            # 文本光标移动到当前行的起始位置
-            line = selection.cursor.block().blockNumber()
-            # print(line)
-            # 检查点击是否在最后一行之后的空白区域
-            text_height = 0
-            for i in range(self.Edit_CmdList.document().blockCount()):
-                block_geometry = self.Edit_CmdList.document().documentLayout().blockBoundingRect(
-                    self.Edit_CmdList.document().findBlockByNumber(i))
-                text_height += block_geometry.height()
-            if event.pos().y() <= text_height:
-                if line >= 0:
-                    line_color = QColor(0, 120, 215)
-                    selection.format.setBackground(line_color)
-                    selection.format.setForeground(QColor("white"))
-                    selection.format.setProperty(QTextFormat.FullWidthSelection, True)
-                    selection.cursor.clearSelection()
-                    extra_selections.append(selection)
-                    self.Edit_CmdList.setExtraSelections(extra_selections)
 
     def Btn_SendCmd_Click(self):
         """发送指令按键单机事件处理函数"""
@@ -305,6 +284,3 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def closeEvent(self, event):
         """关闭串口时确保关闭串口"""
         return super().closeEvent(event)
-
-
-
