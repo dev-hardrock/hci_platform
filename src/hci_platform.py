@@ -8,6 +8,7 @@ from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
 from generated.hci_platform import Ui_Hci_PlatForm
 from src.utils import *
+from src.hci_parse import *
 import json
 
 
@@ -112,21 +113,20 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
             if len(all_keys) == 1:
                 json_file = self.ComboBox_TestFile.currentText()
                 if not json_file == "":
-                    with open(json_file, 'r', encoding='utf-8') as file:
-                        hci_info = json.load(file)
-                    for identifier in hci_info['hci_commands']:
-                        for command in identifier['command']:
-                            for key in all_keys:
-                                if command['name'] == key:
-                                    self.Edit_CmdDetail.clear()
-                                    opcode = convert_hex_string(command['opcode'])
-                                    if opcode is None:
-                                        return
-                                    # params =
-                                    print(opcode)
-                                    # message += hex_string
-                                    # self.Edit_cmdData.append()
-                                    self.Edit_CmdDetail.append(opcode)
+                    message = hci_parse_with_json(json_file, json_data)
+                    if message !="":
+                        self.Edit_CmdDetail.setText(message)
+                    # with open(json_file, 'r', encoding='utf-8') as file:
+                    #     hci_info = json.load(file)
+                    # for identifier in hci_info['hci_commands']:
+                    #     for command in identifier['command']:
+                    #         for key in all_keys:
+                    #             if command['name'] == key:
+                    #                 self.Edit_CmdDetail.clear()
+
+                    #                 # message += hex_string
+                    #                 # self.Edit_cmdData.append()
+                    #                 self.Edit_CmdDetail.append(opcode)
         except json.JSONDecodeError:
             return
 
@@ -152,9 +152,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         if event.pos().y() <= text_height:
             if line >= 0:
                 cmd = cursor.block().text()
-                json_file = self.ComboBox_TestFile.currentText()
-                if not json_file == "":
-                    with open(json_file, 'r', encoding='utf-8') as file:
+                if not self.cur_file == "":
+                    with open(self.cur_file, 'r', encoding='utf-8') as file:
                         hci_info = json.load(file)
                     for identifier in hci_info['hci_commands']:
                         for command in identifier['command']:
@@ -177,7 +176,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                                     """
                                     self.Edit_CmdProperty.setText(json_array)
                                 else:
-                                    json_data = {command['name']: 0}
+                                    json_data = {command['name']: '0'}
                                     json_array = json.dumps(json_data, indent=4)
                                     self.Edit_CmdProperty.setText(json_array)
 
