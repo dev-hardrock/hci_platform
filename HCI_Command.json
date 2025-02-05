@@ -25,6 +25,695 @@
         {
           "name": "HCI_Inquiry_Cancel",
           "opcode": "0x0402"
+        },
+        {
+          "name": "HCI_Periodic_Inquiry_Mode",
+          "opcode": "0x0403",
+          "parameters": [
+            {
+              "name": "Max_Period_Length",
+              "type": "uint16"
+            },
+            {
+              "name": "Min_Period_Length",
+              "type": "uint16"
+            },
+            {
+              "name": "LAP",
+              "type": "uint24"
+            },
+            {
+              "name": "Inquiry_Length",
+              "type": "uint8"
+            },
+            {
+              "name": "Num_Responses",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Exit_Periodic_Inquiry_Mode",
+          "opcode": "0x0404"
+        },
+        {
+          "name": "HCI_Create_Connection",
+          "opcode": "0x0405",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Packet_Type",
+              "type": "uint16"
+            },
+            {
+              "name": "Page_Scan_Repetition_Mode",
+              "type": "uint8"
+            },
+            {
+              "name": "Reserved",
+              "type": "uint8"
+            },
+            {
+              "name": "Clock_Offset",
+              "type": "uint16"
+            },
+            {
+              "name": "Allow_Role_Switch",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Disconnect",
+          "opcode": "0x0406",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            },
+            {
+              "name": "Reason",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Create_Connection_Cancel",
+          "opcode": "0x0408",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Accept_Connection_Request",
+          "opcode": "0x0409",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Role",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Reject_Connection_Request",
+          "opcode": "0x040a",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Reason",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Link_Key_Request_Reply",
+          "opcode": "0x040b",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Link_Key",
+              "type": "uint128"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Link_Key_Request_Negative_Reply",
+          "opcode": "0x040c",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_PIN_Code_Request_Reply",
+          "opcode": "0x040d",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "PIN_Code_Length",
+              "type": "uint8"
+            },
+            {
+              "name": "PIN_Code",
+              "type": "uint128"
+            }
+          ]
+        },
+        {
+          "name": "HCI_PIN_Code_Request_Negative_Reply",
+          "opcode": "0x040e",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Change_Connection_Packet_Type",
+          "opcode": "0x040f",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            },
+            {
+              "name": "Packet_Type",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Authentication_Requested",
+          "opcode": "0x0411",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Set_Connection_Encryption",
+          "opcode": "0x0413",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            },
+            {
+              "name": "Encryption_Enable",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Change_Connection_Link_Key",
+          "opcode": "0x0415",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Link_Key_Selection",
+          "opcode": "0x0417",
+          "parameters": [
+            {
+              "name": "Key_Flag",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Remote_Name_Request",
+          "opcode": "0x0419",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Page_Scan_Repetition_Mode",
+              "type": "uint8"
+            },
+            {
+              "name": "Reserved",
+              "type": "uint8"
+            },
+            {
+              "name": "Clock_Offset",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Remote_Name_Request_Cancel",
+          "opcode": "0x041a",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Remote_Supported_Features",
+          "opcode": "0x041b",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Remote_Extended_Features",
+          "opcode": "0x041c",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            },
+            {
+              "name": "Page_Number",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Remote_Version_Information",
+          "opcode": "0x041d",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Clock_Offset",
+          "opcode": "0x041f",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_LMP_Handle",
+          "opcode": "0x0420",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Setup_Synchronous_Connection",
+          "opcode": "0x0428",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            },
+            {
+              "name": "Transmit_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Receive_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Max_Latency",
+              "type": "uint16"
+            },
+            {
+              "name": "Voice_Setting",
+              "type": "uint16"
+            },
+            {
+              "name": "Retransmission_Effort",
+              "type": "uint8"
+            },
+            {
+              "name": "Packet_Type",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Accept_Synchronous_Connection_Request",
+          "opcode": "0x0429",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Transmit_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Receive_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Max_Latency",
+              "type": "uint16"
+            },
+            {
+              "name": "Voice_Setting",
+              "type": "uint16"
+            },
+            {
+              "name": "Retransmission_Effort",
+              "type": "uint8"
+            },
+            {
+              "name": "Packet_Type",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Reject_Synchronous_Connection_Request",
+          "opcode": "0x042a",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Reason",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_IO_Capability_Request_Reply",
+          "opcode": "0x042b",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "IO_Capability",
+              "type": "uint8"
+            },
+            {
+              "name": "OOB_Data_Present",
+              "type": "uint8"
+            },
+            {
+              "name": "Authentication_Requirements",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_User_Confirmation_Request_Reply",
+          "opcode": "0x042c",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_User_Confirmation_Request_Negative_Reply",
+          "opcode": "0x042d",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_User_Passkey_Request_Reply",
+          "opcode": "0x042e",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Numeric_Value",
+              "type": "uint32"
+            }
+          ]
+        },
+        {
+          "name": "HCI_User_Passkey_Request_Negative_Reply",
+          "opcode": "0x042f",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Remote_OOB_Data_Request_Reply",
+          "opcode": "0x0430",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "C",
+              "type": "uint128"
+            },
+            {
+              "name": "R",
+              "type": "uint128"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Remote_OOB_Data_Request_Negative_Reply",
+          "opcode": "0x0433",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            }
+          ]
+        },
+        {
+          "name": "HCI_IO_Capability_Request_Negative_Reply",
+          "opcode": "0x0434",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "type": "uint48"
+            },
+            {
+              "name": "Reason",
+              "type": "uint8"
+            }
+          ]
+        },
+        {
+          "name": "HCI_Enhanced_Setup_Synchronous_Connection",
+          "opcode": "0x043d",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "type": "uint16"
+            },
+            {
+              "name": "Transmit_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Receive_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Transmit_Coding_Format",
+              "type": "uint40"
+            },
+            {
+              "name": "Receive_Coding_Format",
+              "type": "uint40"
+            },
+            {
+              "name": "Transmit_Codec_Frame_Size",
+              "type": "uint16"
+            },
+            {
+              "name": "Receive_Codec_Frame_Size",
+              "type": "uint16"
+            },
+            {
+              "name": "Input_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Output_Bandwidth",
+              "type": "uint32"
+            },
+            {
+              "name": "Input_Coding_Format",
+              "type": "uint40"
+            },
+            {
+              "name": "Output_Coding_Format",
+              "type": "uint40"
+            },
+            {
+              "name": "Input_Coded_Data_Size",
+              "type": "uint16"
+            },
+            {
+              "name": "Output_Coded_Data_Size",
+              "type": "uint16"
+            },
+            {
+              "name": "Input_PCM_Data_Format",
+              "type": "uint8"
+            },
+            {
+              "name": "Output_PCM_Data_Format",
+              "type": "uint8"
+            },
+            {
+              "name": "Input_PCM_Sample_Payload_MSB_Position",
+              "type": "uint8"
+            },
+            {
+              "name": "Output_PCM_Sample_Payload_MSB_Position",
+              "type": "uint8"
+            },
+            {
+              "name": "Input_Data_Path",
+              "type": "uint8"
+            },
+            {
+              "name": "Output_Data_Path",
+              "type": "uint8"
+            },
+            {
+              "name": "Input_Transport_Unit_Size",
+              "type": "uint8"
+            },
+            {
+              "name": "Output_Transport_Unit_Size",
+              "type": "uint8"
+            },
+            {
+              "name": "Max_Latency",
+              "type": "uint16"
+            },
+            {
+              "name": "Packet_Type",
+              "type": "uint16"
+            }
+          ]
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
+        },
+        {
+
         }
       ]
     }
