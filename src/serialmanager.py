@@ -55,10 +55,12 @@ class SerialManager(QObject):
     def send_data(self, data):
         """发送数据"""
         chunk_size = 1024
+        if isinstance(data, str):
+            data = data.encode('utf-8')
         for i in range(0, len(data), chunk_size):
             chunk = data[i:i + chunk_size]
             bytes_written = self.com.write(chunk)
             if bytes_written == -1:
                 print("Error writing to serial port")
                 break
-            self.com.flush(QSerialPort.Output)
+            self.com.flush()

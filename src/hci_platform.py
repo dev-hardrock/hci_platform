@@ -1,15 +1,28 @@
 import subprocess
 import sys
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QTextEdit
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from src.serialmanager import *
 from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
 from generated.hci_platform import Ui_Hci_PlatForm
-from src.utils import *
 from src.hci_parse import *
+from src.log import *
 import json
+
+
+class QTextEditLogger(logging.Handler, QTextEdit):
+    def __init__(self, parent):
+        super().__init__()
+        self.widget = QTextEdit(parent)
+        self.widget.setReadOnly(True)
+        self.widget.resize(parent.size())
+
+    def emit(self, record):
+        log = self.format(record)
+        self.widget.append(log)
+        self.widget.ensureCursorVisible()
 
 
 # 继承两个父类
@@ -32,7 +45,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
         # 初始化
         self.isMousePressed = False
-        self.com = SerialManager(callback=None)
+        self.com = SerialManager(callback=self.EditLog_Show)
 
         # 开启鼠标跟踪
         self.Edit_CmdList.viewport().setCursor(QCursor(Qt.ArrowCursor))
@@ -45,6 +58,18 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
         # 初始化串口波特率配置
         self.ComboBox_SerialBaudList_Init()
+
+        # 开始logging日志设置
+        self.logger = logging.getLogger(__name__)
+        self.logger.setLevel(logging.DEBUG)
+
+        # 创建QTextEdit日志处理器
+        self.EditLog_logger = QTextEditLogger(self.Edit_Log)
+        self.EditLog_logger.setFormatter(CustomFormatter('%(asctime)s [%(levelname)s] : %(message)s'))
+        self.logger.addHandler(self.EditLog_logger)
+
+        # 将默认的日志输出重定向到 QTextEdit
+        logging.basicConfig(level=logging.DEBUG)
 
         # 定义一个定时器，1s定时检测串口列表
         self.timer = QTimer(self)
@@ -114,7 +139,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 json_file = self.ComboBox_TestFile.currentText()
                 if not json_file == "":
                     message = hci_parse_with_json(json_file, json_data)
-                    if message !="":
+                    if message != "":
                         self.Edit_CmdDetail.setText(message)
                     # with open(json_file, 'r', encoding='utf-8') as file:
                     #     hci_info = json.load(file)
@@ -216,10 +241,14 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def Btn_SendCmd_Click(self):
         """发送指令按键单机事件处理函数"""
         data = self.Edit_CmdDetail.toPlainText()
-        self.Edit_Log.append(data)
-        self.Edit_Log.ensureCursorVisible()
+        self.logger.info(f"Tx : {data}")
+
         if self.com.is_open():
             self.com.send_data(data)
+
+    def EditLog_Show(self, data):
+        # self.Edit_Log.append("收<-" + data.data().decode('utf-8'))
+        self.logger.info(f"Rx : {data.data().decode('utf-8')}")  # 使用 logger 记录接收到的数据
 
     def openDevice(self):
         """打开设备按键单击处理函数"""
