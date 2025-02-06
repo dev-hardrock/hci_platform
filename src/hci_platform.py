@@ -2,7 +2,7 @@ import subprocess
 import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QMessageBox, QTextEdit
-from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
+from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice, QThread
 from src.serialmanager import *
 from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
@@ -71,11 +71,17 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 将默认的日志输出重定向到 QTextEdit
         logging.basicConfig(level=logging.DEBUG)
 
+        # 定义一个定时器，5ms定时检测串口接收数据
+        self.com_rx_check = QTimer(self)
+        self.com_rx_check.timeout.connect(self.serial_receive_data)
+
         # 定义一个定时器，1s定时检测串口列表
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.refresh_serial_ports)
         self.connect_signals_slots()
         self.timer.start(1000)
+
+
 
     def ComboBox_TestFile_Load(self):
         """加载指令文件"""
@@ -261,6 +267,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                     self.com.open(portName, portBaud)
                     self.Btn_OpenDevice.setText("关闭设备")
                     self.ComboBox_DeviceList.setEnabled(False)
+                    self.com_rx_check.start(5)
                 except Exception as e:
                     QMessageBox.warning(self, '错误', str(e))
                     self.Btn_OpenDevice.setText("打开设备")
@@ -269,6 +276,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 QMessageBox.warning(None, "警告", "请插入设备!")
         else:
             if not portName == "":
+                self.com_rx_check.stop()
                 self.com.close()
                 self.Btn_OpenDevice.setText("打开设备")
                 self.ComboBox_DeviceList.setEnabled(True)
@@ -293,6 +301,14 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 port_name = port.portName()
                 if port_name not in [self.ComboBox_DeviceList.itemText(i) for i in range(self.ComboBox_DeviceList.count())]:
                     self.ComboBox_DeviceList.addItem(port_name)
+
+    def serial_receive_data(self):
+        if self.com.is_open():
+            data_len = self.com.com.bytesAvailable()
+            if data_len > 0:
+                print(f"Data avalable: {data_len} bytes")
+                data = self.com.com.read(data_len)
+                print(f"Received data: {data.decode('utf-8', 'ignore')}")
 
     def ComboBox_TestFile_index_update(self):
         file_name = self.ComboBox_TestFile.currentText()

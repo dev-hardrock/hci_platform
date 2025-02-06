@@ -34,8 +34,11 @@ def convert_hex_string_with_type(hex_string, unit, size):
     if hex_string.startswith("0x"):
         hex_string = hex_string[2:]
     data_len = get_data_len(unit, size)
-    while len(hex_string) != data_len * 2:
-        hex_string = '0' + hex_string
+    if len(hex_string) < data_len * 2:
+        while len(hex_string) != data_len * 2:
+            hex_string = '0' + hex_string
+    else:
+        hex_string = hex_string[-(data_len * 2):]
 
     # 使用字符串的切片功能分割字符串，每两个字符一组
     split_str = [hex_string[i:i+2] for i in range(0, len(hex_string), 2)]

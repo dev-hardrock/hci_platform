@@ -28,7 +28,7 @@ class SerialManager(QObject):
         self.com.setFlowControl(QSerialPort.NoFlowControl)
 
         # 添加接收信号
-        self.com.readyRead.connect(self.read_data)
+        # self.com.readyRead.connect(self.read_data)
 
         # 打开串口
         if not self.com.open(QSerialPort.ReadWrite):
