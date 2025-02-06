@@ -23,23 +23,17 @@ def convert_hex_string(hex_string):
     return result
 
 
-def get_type(type):
-    if type == 'uint8':
-        return 1
-    if type == 'uint16':
-        return 2
-    if type == 'uint24':
-        return 3
-    if type == 'uint32':
-        return 4
+def get_data_len(unit, size):
+    if unit == 'octet':
+        return size
 
 
-def convert_hex_string_with_type(hex_string, type):
+def convert_hex_string_with_type(hex_string, unit, size):
     if isinstance(hex_string, int):
         hex_string = str(hex_string)
     if hex_string.startswith("0x"):
         hex_string = hex_string[2:]
-    data_len = get_type(type)
+    data_len = get_data_len(unit, size)
     while len(hex_string) != data_len * 2:
         hex_string = '0' + hex_string
 

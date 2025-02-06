@@ -44,7 +44,7 @@
     <rect>
      <x>10</x>
      <y>40</y>
-     <width>300</width>
+     <width>380</width>
      <height>400</height>
     </rect>
    </property>
@@ -57,7 +57,7 @@
     <rect>
      <x>10</x>
      <y>450</y>
-     <width>300</width>
+     <width>380</width>
      <height>200</height>
     </rect>
    </property>
@@ -78,8 +78,8 @@
   <widget class="QPushButton" name="Btn_Clear">
    <property name="geometry">
     <rect>
-     <x>130</x>
-     <y>720</y>
+     <x>670</x>
+     <y>660</y>
      <width>50</width>
      <height>25</height>
     </rect>
@@ -91,7 +91,7 @@
   <widget class="QTextEdit" name="Edit_Log">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>400</x>
      <y>40</y>
      <width>850</width>
      <height>611</height>
@@ -138,7 +138,7 @@
   <widget class="QLabel" name="Label_Device">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>400</x>
      <y>660</y>
      <width>60</width>
      <height>25</height>
@@ -151,7 +151,7 @@
   <widget class="QPushButton" name="Btn_OpenDevice">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>590</x>
      <y>660</y>
      <width>75</width>
      <height>25</height>
@@ -164,7 +164,7 @@
   <widget class="QLabel" name="Label_SerialBaud">
    <property name="geometry">
     <rect>
-     <x>320</x>
+     <x>400</x>
      <y>690</y>
      <width>60</width>
      <height>25</height>
@@ -177,7 +177,7 @@
   <widget class="QComboBox" name="ComboBox_SerialBaudList">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>470</x>
      <y>690</y>
      <width>110</width>
      <height>25</height>
@@ -203,7 +203,7 @@
   <widget class="QComboBox" name="ComboBox_DeviceList">
    <property name="geometry">
     <rect>
-     <x>390</x>
+     <x>470</x>
      <y>660</y>
      <width>110</width>
      <height>25</height>
@@ -218,7 +218,7 @@
     <rect>
      <x>10</x>
      <y>660</y>
-     <width>300</width>
+     <width>380</width>
      <height>50</height>
     </rect>
    </property>

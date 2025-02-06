@@ -1,4 +1,6 @@
 {
+  "version": "v6.0",
+  "version date": "2024-08-27",
   "hci_commands": [
     {
       "identifier": "Link Control Commands",
@@ -10,15 +12,18 @@
           "parameters": [
             {
               "name": "LAP",
-              "type": "uint24"
+              "unit": "octet",
+              "size": 3
             },
             {
               "name": "Inquiry_Length",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Num_Responses",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -32,23 +37,28 @@
           "parameters": [
             {
               "name": "Max_Period_Length",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Min_Period_Length",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "LAP",
-              "type": "uint24"
+              "unit": "octet",
+              "size": 3
             },
             {
               "name": "Inquiry_Length",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Num_Responses",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -62,27 +72,33 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Packet_Type",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Page_Scan_Repetition_Mode",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Reserved",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Clock_Offset",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Allow_Role_Switch",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -92,11 +108,13 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Reason",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -106,7 +124,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -116,11 +135,13 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Role",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -130,11 +151,13 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Reason",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -144,11 +167,13 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Link_Key",
-              "type": "uint128"
+              "unit": "octet",
+              "size": 16
             }
           ]
         },
@@ -158,7 +183,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -168,15 +194,18 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "PIN_Code_Length",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "PIN_Code",
-              "type": "uint128"
+              "unit": "octet",
+              "size": 16
             }
           ]
         },
@@ -186,7 +215,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -196,11 +226,13 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Packet_Type",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -210,7 +242,8 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -220,11 +253,13 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Encryption_Enable",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -234,7 +269,8 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -244,7 +280,8 @@
           "parameters": [
             {
               "name": "Key_Flag",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -254,19 +291,23 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Page_Scan_Repetition_Mode",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Reserved",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Clock_Offset",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -276,7 +317,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -286,7 +328,8 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -296,11 +339,13 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Page_Number",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -310,7 +355,8 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -320,7 +366,8 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -330,7 +377,8 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -340,31 +388,38 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Transmit_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Receive_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Max_Latency",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Voice_Setting",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Retransmission_Effort",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Packet_Type",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -374,31 +429,38 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Transmit_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Receive_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Max_Latency",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Voice_Setting",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Retransmission_Effort",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Packet_Type",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             }
           ]
         },
@@ -408,11 +470,13 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Reason",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -422,19 +486,23 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "IO_Capability",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "OOB_Data_Present",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Authentication_Requirements",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -444,7 +512,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -454,7 +523,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -464,11 +534,13 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Numeric_Value",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             }
           ]
         },
@@ -478,7 +550,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -488,15 +561,18 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "C",
-              "type": "uint128"
+              "unit": "octet",
+              "size": 16
             },
             {
               "name": "R",
-              "type": "uint128"
+              "unit": "octet",
+              "size": 16
             }
           ]
         },
@@ -506,7 +582,8 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             }
           ]
         },
@@ -516,11 +593,13 @@
           "parameters": [
             {
               "name": "BD_ADDR",
-              "type": "uint48"
+              "unit": "octet",
+              "size": 6
             },
             {
               "name": "Reason",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
@@ -530,195 +609,449 @@
           "parameters": [
             {
               "name": "Connection_Handle",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Transmit_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Receive_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Transmit_Coding_Format",
-              "type": "uint40"
+              "unit": "octet",
+              "size": 5
             },
             {
               "name": "Receive_Coding_Format",
-              "type": "uint40"
+              "unit": "octet",
+              "size": 5
             },
             {
               "name": "Transmit_Codec_Frame_Size",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Receive_Codec_Frame_Size",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Input_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Output_Bandwidth",
-              "type": "uint32"
+              "unit": "octet",
+              "size": 4
             },
             {
               "name": "Input_Coding_Format",
-              "type": "uint40"
+              "unit": "octet",
+              "size": 5
             },
             {
               "name": "Output_Coding_Format",
-              "type": "uint40"
+              "unit": "octet",
+              "size": 5
             },
             {
               "name": "Input_Coded_Data_Size",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Output_Coded_Data_Size",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Input_PCM_Data_Format",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Output_PCM_Data_Format",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Input_PCM_Sample_Payload_MSB_Position",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Output_PCM_Sample_Payload_MSB_Position",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Input_Data_Path",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Output_Data_Path",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Input_Transport_Unit_Size",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Output_Transport_Unit_Size",
-              "type": "uint8"
+              "unit": "octet",
+              "size": 1
             },
             {
               "name": "Max_Latency",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
             },
             {
               "name": "Packet_Type",
-              "type": "uint16"
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Retransmission_Effort",
+              "unit": "octet",
+              "size": 1
             }
           ]
         },
         {
-
+          "name": "HCI_Enhanced_Accept_Synchronous_Connection_Request",
+          "opcode": "0x043e",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "Transmit_Bandwidth",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Receive_Bandwidth",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Transmit_Coding_Format",
+              "unit": "octet",
+              "size": 5
+            },
+            {
+              "name": "Receive_Coding_Format",
+              "unit": "octet",
+              "size": 5
+            },
+            {
+              "name": "Transmit_Codec_Frame_Size",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Receive_Codec_Frame_Size",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Input_Bandwidth",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Output_Bandwidth",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Input_Coding_Format",
+              "unit": "octet",
+              "size": 5
+            },
+            {
+              "name": "Output_Coding_Format",
+              "unit": "octet",
+              "size": 5
+            },
+            {
+              "name": "Input_Coded_Data_Size",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Output_Coded_Data_Size",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Input_PCM_Data_Format",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Output_PCM_Data_Format",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Input_PCM_Sample_Payload_MSB_Position",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Output_PCM_Sample_Payload_MSB_Position",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Input_Data_Path",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Output_Data_Path",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Input_Transport_Unit_Size",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Output_Transport_Unit_Size",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Max_Latency",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Packet_Type",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Retransmission_Effort",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
         },
         {
-
+          "name": "HCI_Truncated_Page",
+          "opcode": "0x043f",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "Page_Scan_Repetition_Mode",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Clock_Offset",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
         },
         {
-
+          "name": "HCI_Truncated_Page_Cancel",
+          "opcode": "0x0440",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            }
+          ]
         },
         {
-
+          "name": "HCI_Set_Connectionless_Peripheral_Broadcast",
+          "opcode": "0x0441",
+          "parameters": [
+            {
+              "name": "Enable",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "LT_ADDR",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "LPO_Allowed",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Packet_Type",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Interval_Min",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Interval_Max",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Supervision_Timeout",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
         },
         {
-
+          "name": "HCI_Set_Connectionless_Peripheral_Broadcast_Receive",
+          "opcode": "0x0442",
+          "parameters": [
+            {
+              "name": "Enable",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "LT_ADDR",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Interval",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Clock_Offset",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Next_Connectionless_Peripheral_Broadcast_Clock",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Supervision_Timeout",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Remote_Timing_Accuracy",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Skip",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Packet_Type",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "AFH_Channel_Map",
+              "unit": "octet",
+              "size": 10
+            }
+          ]
         },
         {
-
+          "name": "HCI_Start_Synchronization_Train",
+          "opcode": "0x0443"
         },
         {
-
+          "name": "HCI_Receive_Synchronization_Train",
+          "opcode": "0x0444",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "Sync_Scan_Timeout",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Sync_Scan_Window",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Sync_Scan_Interval",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
         },
         {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
-        },
-        {
-
+          "name": "HCI_Remote_OOB_Extended_Data_Request_Reply",
+          "opcode": "0x0445",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "C_192",
+              "unit": "octet",
+              "size": 16
+            },
+            {
+              "name": "R_192",
+              "unit": "octet",
+              "size": 16
+            },
+            {
+              "name": "C_256",
+              "unit": "octet",
+              "size": 16
+            },
+            {
+              "name": "R_256",
+              "unit": "octet",
+              "size": 16
+            }
+          ]
         }
       ]
     }
   ],
-  "hci_events": [
-
-  ]
+  "hci_events": []
 }
