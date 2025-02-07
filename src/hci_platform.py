@@ -246,15 +246,23 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
     def Btn_SendCmd_Click(self):
         """发送指令按键单机事件处理函数"""
-        data = self.Edit_CmdDetail.toPlainText()
-        self.logger.info(f"Tx : {data}")
+        # 获取需要发送的数据字符串
+        context = self.Edit_CmdDetail.toPlainText()
+        # 删除字符串中的空格
+        hex_string = context.replace(" ", "")
+        # 字符串长度应该为2的倍数，如果不是，则在字符串前补0
+        while len(hex_string) % 2 != 0:
+            hex_string = '0' + hex_string
+        # 字符串转16进制数据
+        hex_data = bytes.fromhex(hex_string)
+        self.logger.info(f"Tx : {' '.join(f'{byte:02x}' for byte in hex_data)}")
 
         if self.com.is_open():
-            self.com.send_data(data)
+            self.com.send_data(hex_data)
 
     def EditLog_Show(self, data):
         # self.Edit_Log.append("收<-" + data.data().decode('utf-8'))
-        self.logger.info(f"Rx : {data.data().decode('utf-8')}")  # 使用 logger 记录接收到的数据
+        self.logger.info(f"Rx : {' '.join(f'{byte:02x}' for byte in data)}")  # 使用 logger 记录接收到的数据
 
     def openDevice(self):
         """打开设备按键单击处理函数"""
@@ -308,7 +316,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
             if data_len > 0:
                 print(f"Data avalable: {data_len} bytes")
                 data = self.com.com.read(data_len)
-                print(f"Received data: {data.decode('utf-8', 'ignore')}")
+                # print(f"Received data: {data.decode('utf-8', 'ignore')}")
+                self.EditLog_Show(data)
 
     def ComboBox_TestFile_index_update(self):
         file_name = self.ComboBox_TestFile.currentText()
