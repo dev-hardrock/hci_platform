@@ -2,7 +2,7 @@ import subprocess
 import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QMessageBox, QTextEdit
-from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice, QThread
+from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from src.serialmanager import *
 from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
@@ -81,8 +81,6 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         self.connect_signals_slots()
         self.timer.start(1000)
 
-
-
     def ComboBox_TestFile_Load(self):
         """加载指令文件"""
         if not self.cur_file == "":
@@ -90,10 +88,9 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 cmdlist = json.load(file)
             self.Edit_CmdList.clear()
             for command in cmdlist['hci_commands']:
-                if command['identifier'] == "Link Control Commands":
-                    self.Edit_CmdList.append("--------  " + command['identifier'] + "  --------")
-                    for cmd in command['command']:
-                        self.Edit_CmdList.append(cmd['name'])
+                self.Edit_CmdList.append("- - - - - - - - - - - - - - - - " + command['property'])
+                for cmd in command['command']:
+                    self.Edit_CmdList.append(cmd['name'])
 
     def ComboBox_TestFile_Init(self):
         """查找可用的指令文件"""
@@ -149,8 +146,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                         self.Edit_CmdDetail.setText(message)
                     # with open(json_file, 'r', encoding='utf-8') as file:
                     #     hci_info = json.load(file)
-                    # for identifier in hci_info['hci_commands']:
-                    #     for command in identifier['command']:
+                    # for property in hci_info['hci_commands']:
+                    #     for command in property['command']:
                     #         for key in all_keys:
                     #             if command['name'] == key:
                     #                 self.Edit_CmdDetail.clear()
@@ -186,8 +183,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 if not self.cur_file == "":
                     with open(self.cur_file, 'r', encoding='utf-8') as file:
                         hci_info = json.load(file)
-                    for identifier in hci_info['hci_commands']:
-                        for command in identifier['command']:
+                    for attr in hci_info['hci_commands']:
+                        for command in attr['command']:
                             if command['name'] == cmd:
                                 # self.Edit_cmd.clear()
                                 if 'parameters' in command:

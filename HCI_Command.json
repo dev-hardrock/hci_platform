@@ -3,7 +3,7 @@
   "version date": "2024-08-27",
   "hci_commands": [
     {
-      "identifier": "Link Control Commands",
+      "property": "Link Control Commands",
       "OGF": "0x01",
       "command": [
         {
@@ -1051,6 +1051,546 @@
           ]
         }
       ]
+    },
+    {
+      "property": "Link Policy Commands",
+      "OGF": "0x02",
+      "description": "给主机提供影响链接管理器管理微微网方式的方法",
+      "command": [
+        {
+          "name": "HCI_Hold_Mode",
+          "opcode": "0x0801",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Hold_Mode_Max_Interval",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Hold_Mode_Min_Interval",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Sniff_Mode",
+          "opcode": "0x0803",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Sniff_Max_Interval",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Sniff_Min_Interval",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Sniff_Attempt",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Sniff_Timeout",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Exit_Sniff_Mode",
+          "opcode": "0x0804",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_QoS_Setup",
+          "opcode": "0x0807",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Unused",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Service_Type",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Token_Rate",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Peak_Bandwidth",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Latency",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Delay_Variation",
+              "unit": "octet",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": "HCI_Role_Discovery",
+          "opcode": "0x0809",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Switch_Role",
+          "opcode": "0x080b",
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "Role",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Link_Policy_Settings",
+          "opcode": "0x080c",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Write_Link_Policy_Settings",
+          "opcode": "0x080d",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Link_Policy_Settings",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Default_Link_Policy_Settings",
+          "opcode": "0x080e"
+        },
+        {
+          "name": "HCI_Write_Default_Link_Policy_Settings",
+          "opcode": "0x080f",
+          "parameters": [
+            {
+              "name": "Default_Link_Policy_Settings",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Flow_Specification",
+          "opcode": "0x0810",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Unused",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Flow_Direction",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Service_Type",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Token_Rate",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Token_Bucket_Size",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Peak_Bandwidth",
+              "unit": "octet",
+              "size": 4
+            },
+            {
+              "name": "Access_Latency",
+              "unit": "octet",
+              "size": 4
+            }
+          ]
+        },
+        {
+          "name": "HCI_Sniff_Subrating",
+          "opcode": "0x0811",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Max_Latency",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Min_Remote_Timeout",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Min_Local_Timeout",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "property": "Controller & Baseband commands",
+      "OGF": "0x03",
+      "description": "none",
+      "command": []
+    },
+    {
+      "property": "Infomational parameters",
+      "OGF": "0x04",
+      "description": "none",
+      "command": [
+        {
+            "name":"HCI_Read_Local_Version_Information",
+            "opcode":"0x1001"
+        },
+        {
+            "name":"HCI_Read_Local_Supported_Commands",
+            "opcode":"0x1002"
+        },
+        {
+            "name":"HCI_Read_Local_Supported_Features",
+            "opcode":"0x1003"
+        },
+        {
+            "name":"HCI_Read_Local_Extended_Features",
+            "opcode":"0x1004",
+            "parameters":[
+                {
+                    "name":"Page_Number",
+                    "unit":"octet",
+                    "size":1
+                }
+            ]
+        },
+        {
+            "name":"HCI_Read_Buffer_Size",
+            "opcode":"0x1005"
+        },
+        {
+            "name":"HCI_Read_BD_ADDR",
+            "opcode":"0x1009"
+        },
+        {
+            "name":"HCI_Read_Data_Block_Size",
+            "opcode":"0x100a"
+        },
+        {
+            "name":"HCI_Read_Local_Supported_Codecs_V1",
+            "opcode":"0x100b"
+        },
+        {
+            "name":"HCI_Read_Local_Simple_Pairing_Options",
+            "opcode":"0x100c"
+        },
+        {
+            "name":"HCI_Read_Local_Supported_Codecs_V2",
+            "opcode":"0x100d"
+        },
+        {
+            "name":"HCI_Read_Local_Supported_Codec_Capabilities",
+            "opcode":"0x100e"
+        },
+        {
+            "name":"HCI_Read_Local_Supported_Controller_Delay",
+            "opcode":"0x100f",
+            "parameters":[
+                {
+                    "name":"Codec_ID",
+                    "unit":"octet",
+                    "size":1
+                },
+                {
+                    "name":"Logical_Transport_Type",
+                    "unit":"octet",
+                    "size":1
+                },
+                {
+                    "name":"Direction",
+                    "unit":"octet",
+                    "size":1
+                },
+                {
+                    "name":"Codec_Configuration_Length",
+                    "unit":"octet",
+                    "size":1
+                },
+                {
+                    "name":"Codec_configuration",
+                    "unit":"octet"
+                }
+            ]
+        }
+      ]
+    },
+    {
+      "property": "Status parameters",
+      "OGF": "0x05",
+      "description": "none",
+      "command": [
+        {
+          "name": "HCI_Read_Failed_Contact_Counter",
+          "opcode": "0x1401",
+          "parameters": [
+            {
+              "name": "handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Reset_Failed_Contact_Counter",
+          "opcode": "0x1402",
+          "parameters": [
+            {
+              "name": "handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Link_Quality",
+          "opcode": "0x1403",
+          "parameters": [
+            {
+              "name": "handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_RSSI",
+          "opcode": "0x1405",
+          "parameters": [
+            {
+              "name": "handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_AFH_Channel_Map",
+          "opcode": "0x1406",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Clock",
+          "opcode": "0x1407",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Which_Clock",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "HCI_Read_Encryption_Key_Size",
+          "opcode": "0x1408",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
+        },
+        {
+          "name": "HCI_Get_MWS_Transport_Layer_Configuration",
+          "opcode": "0x140c"
+        },
+        {
+          "name": "HCI_Set_Triggered_Clock_Capture",
+          "opcode": "0x140d",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "Enable",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Which_Clock",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "LPO_Allowed",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Num_Clock_Captures_To_Filter",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "property": "Testing Commands",
+      "OGF": "0x06",
+      "description": "none",
+      "command": [
+        {
+          "name": "HCI_Read_Loopback_Mode",
+          "opcode": "0x1801"
+        },
+        {
+          "name": "HCI_Write_Loopback_Mode",
+          "opcode": "0x1802",
+          "parameters": [
+            {
+              "name": "Loopback_Mode",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "HCI_Enable_Implementation_Under_Test_Mode",
+          "opcode": "0x1803"
+        },
+        {
+          "name": "HCI_Write_Simple_Pairing_Debug_Mode",
+          "opcode": "0x1804",
+          "parameters": [
+            {
+              "name": "Simple_Pairing_Debug_Mode",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
+        },
+        {
+          "name": "HCI_Write_Secure_Connections_Test_Mode",
+          "opcode": "0x180a",
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            },
+            {
+              "name": "DM1_ACL-U_Mode",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "eSCO_Loopback_Mode",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "property": "Events",
+      "OGF": "0x07",
+      "description": "none",
+      "command": []
+    },
+    {
+      "property": "LE Controller Commands",
+      "OGF": "0x08",
+      "description": "none",
+      "command": []
     }
   ],
   "hci_events": []
