@@ -1308,7 +1308,109 @@
       "property": "Controller & Baseband commands",
       "OGF": "0x03",
       "description": "none",
-      "command": []
+      "command": [
+        {
+          "name": "HCI_Set_Event_Mask",
+          "opcode": "0x0c01",
+          "parameters": [
+            {
+              "name": "Event_Mask",
+              "unit": "octet",
+              "size": 8
+            }
+          ]
+        },
+        {
+          "name": "HCI_Reset",
+          "opcode": "0x0c03"
+        },
+        {
+          "name": "HCI_Set_Event_Filter",
+          "opcode": "0x0c05",
+          "parameters": [
+            {
+              "name": "Filter_Type",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Filter_Condition_Type",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Condition",
+              "unit": "octet",
+              "size": 6
+            }
+          ]
+        },
+        {
+            "name":"HCI_Flush",
+            "opcode":"0x0c08",
+            "parameters":[
+                {
+                    "name":"Connection_Handle",
+                    "unit":"octet",
+                    "size":2
+                }
+            ]
+        },
+        {
+            "name":"HCI_Read_PIN_Type",
+            "opcode":"0x0c09"
+        },
+        {
+            "name":"HCI_Write_PIN_Type",
+            "opcode":"0x0c0a",
+            "parameters":[
+                {
+                    "name":"PIN_Type",
+                    "unit":"octet",
+                    "size":1
+                }
+            ]
+        },
+        {
+            "name":"HCI_Read_Stored_Link_Key",
+            "opcode":"0x0c0d",
+            "parameters":[
+                {
+                    "name":"BD_ADDR",
+                    "unit":"octet",
+                    "size":6
+                },
+                {
+                    "name":"Read_All",
+                    "unit":"octet",
+                    "size":1
+                }
+            ]
+        },
+        {
+            "name":"HCI_Write_Stored_Link_Key",
+            "opcode":"0x0c11",
+            "parameters":[
+                {
+                    "name":"Num_Keys_To_Write",
+                    "unit":"octet",
+                    "size":"1"
+                },
+                {
+                    "name":"BD_ADDR",
+                    "unit":"octet",
+                    "//size":"Num_Keys_To_Write * 6",
+                    "size":"1"
+                },
+                {
+                    "name":"Link_Key",
+                    "unit":"octet",
+                    "//size":"Num_Keys_To_Write * 16",
+                    "size":"1"
+                }
+            ]
+        }
+      ]
     },
     {
       "property": "Infomational parameters",
@@ -1316,85 +1418,85 @@
       "description": "none",
       "command": [
         {
-            "name":"HCI_Read_Local_Version_Information",
-            "opcode":"0x1001"
+          "name": "HCI_Read_Local_Version_Information",
+          "opcode": "0x1001"
         },
         {
-            "name":"HCI_Read_Local_Supported_Commands",
-            "opcode":"0x1002"
+          "name": "HCI_Read_Local_Supported_Commands",
+          "opcode": "0x1002"
         },
         {
-            "name":"HCI_Read_Local_Supported_Features",
-            "opcode":"0x1003"
+          "name": "HCI_Read_Local_Supported_Features",
+          "opcode": "0x1003"
         },
         {
-            "name":"HCI_Read_Local_Extended_Features",
-            "opcode":"0x1004",
-            "parameters":[
-                {
-                    "name":"Page_Number",
-                    "unit":"octet",
-                    "size":1
-                }
-            ]
+          "name": "HCI_Read_Local_Extended_Features",
+          "opcode": "0x1004",
+          "parameters": [
+            {
+              "name": "Page_Number",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
         },
         {
-            "name":"HCI_Read_Buffer_Size",
-            "opcode":"0x1005"
+          "name": "HCI_Read_Buffer_Size",
+          "opcode": "0x1005"
         },
         {
-            "name":"HCI_Read_BD_ADDR",
-            "opcode":"0x1009"
+          "name": "HCI_Read_BD_ADDR",
+          "opcode": "0x1009"
         },
         {
-            "name":"HCI_Read_Data_Block_Size",
-            "opcode":"0x100a"
+          "name": "HCI_Read_Data_Block_Size",
+          "opcode": "0x100a"
         },
         {
-            "name":"HCI_Read_Local_Supported_Codecs_V1",
-            "opcode":"0x100b"
+          "name": "HCI_Read_Local_Supported_Codecs_V1",
+          "opcode": "0x100b"
         },
         {
-            "name":"HCI_Read_Local_Simple_Pairing_Options",
-            "opcode":"0x100c"
+          "name": "HCI_Read_Local_Simple_Pairing_Options",
+          "opcode": "0x100c"
         },
         {
-            "name":"HCI_Read_Local_Supported_Codecs_V2",
-            "opcode":"0x100d"
+          "name": "HCI_Read_Local_Supported_Codecs_V2",
+          "opcode": "0x100d"
         },
         {
-            "name":"HCI_Read_Local_Supported_Codec_Capabilities",
-            "opcode":"0x100e"
+          "name": "HCI_Read_Local_Supported_Codec_Capabilities",
+          "opcode": "0x100e"
         },
         {
-            "name":"HCI_Read_Local_Supported_Controller_Delay",
-            "opcode":"0x100f",
-            "parameters":[
-                {
-                    "name":"Codec_ID",
-                    "unit":"octet",
-                    "size":1
-                },
-                {
-                    "name":"Logical_Transport_Type",
-                    "unit":"octet",
-                    "size":1
-                },
-                {
-                    "name":"Direction",
-                    "unit":"octet",
-                    "size":1
-                },
-                {
-                    "name":"Codec_Configuration_Length",
-                    "unit":"octet",
-                    "size":1
-                },
-                {
-                    "name":"Codec_configuration",
-                    "unit":"octet"
-                }
-            ]
+          "name": "HCI_Read_Local_Supported_Controller_Delay",
+          "opcode": "0x100f",
+          "parameters": [
+            {
+              "name": "Codec_ID",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Logical_Transport_Type",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Direction",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Codec_Configuration_Length",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "Codec_configuration",
+              "unit": "octet"
+            }
+          ]
         }
       ]
     },

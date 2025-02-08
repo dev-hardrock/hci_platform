@@ -25,7 +25,7 @@ class SerialManager(QObject):
         self.com.setDataBits(QSerialPort.Data8)
         self.com.setParity(QSerialPort.NoParity)
         self.com.setStopBits(QSerialPort.OneStop)
-        self.com.setFlowControl(QSerialPort.NoFlowControl)
+        self.com.setFlowControl(QSerialPort.HardwareControl)
 
         # 添加接收信号
         # self.com.readyRead.connect(self.read_data)
