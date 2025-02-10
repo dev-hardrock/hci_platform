@@ -19,7 +19,7 @@ def convert_hex_string(hex_string):
     reversed_split_str = split_str[::-1]
 
     # 使用join方法用空格连接这些部分
-    result = ' '.join(reversed_split_str) + ' '
+    result = ''.join(reversed_split_str)
     return result
 
 
@@ -47,5 +47,5 @@ def convert_hex_string_with_type(hex_string, unit, size):
     reversed_split_str = split_str[::-1]
 
     # 使用join方法用空格连接这些部分
-    result = ' '.join(reversed_split_str) + ' '
+    result = ''.join(reversed_split_str)
     return result

@@ -37,7 +37,7 @@ class Ui_Hci_PlatForm(object):
         self.Btn_Clear.setGeometry(QtCore.QRect(670, 660, 50, 25))
         self.Btn_Clear.setObjectName("Btn_Clear")
         self.Edit_Log = QtWidgets.QTextEdit(Hci_PlatForm)
-        self.Edit_Log.setGeometry(QtCore.QRect(400, 40, 850, 611))
+        self.Edit_Log.setGeometry(QtCore.QRect(400, 40, 768, 611))
         palette = QtGui.QPalette()
         brush = QtGui.QBrush(QtGui.QColor(240, 240, 240))
         brush.setStyle(QtCore.Qt.SolidPattern)

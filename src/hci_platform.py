@@ -7,10 +7,20 @@ from src.serialmanager import *
 from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
 from generated.hci_platform import Ui_Hci_PlatForm
+from hci.hci import Hci_Thread, Hci_Drv
 from src.hci_parse import *
 from src.log import *
 import json
 
+class My_Hci_Drv(Hci_Drv):
+    def __init__(self):
+        super().__init__()
+
+    def send(self):
+        pass
+
+    def recv(self):
+        pass
 
 class QTextEditLogger(logging.Handler, QTextEdit):
     def __init__(self, parent):
@@ -23,6 +33,9 @@ class QTextEditLogger(logging.Handler, QTextEdit):
         log = self.format(record)
         self.widget.append(log)
         self.widget.ensureCursorVisible()
+
+    def clear(self):
+        self.widget.clear()
 
 
 # 继承两个父类
@@ -45,7 +58,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
         # 初始化
         self.isMousePressed = False
-        self.com = SerialManager(callback=self.EditLog_Show)
+        self.serial = SerialManager(callback=self.EditLog_Show)
 
         # 开启鼠标跟踪
         self.Edit_CmdList.viewport().setCursor(QCursor(Qt.ArrowCursor))
@@ -70,6 +83,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
         # 将默认的日志输出重定向到 QTextEdit
         logging.basicConfig(level=logging.DEBUG)
+
+        self.hci_thread = Hci_Thread(My_Hci_Drv)
 
         # 定义一个定时器，5ms定时检测串口接收数据
         self.com_rx_check = QTimer(self)
@@ -117,7 +132,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 创建Btn_SendCmd单击事件处理信号
         self.Btn_SendCmd.clicked.connect(self.Btn_SendCmd_Click)
         # 创建Btn_Clear指令单击事件处理信号
-        self.Btn_Clear.clicked.connect(self.Edit_CmdDetail_Clear)
+        self.Btn_Clear.clicked.connect(self.Edit_Log_Clear)
         # 创建Edit_CmdList鼠标移动信号
         self.Edit_CmdList.mouseMoveEvent = self.cmdMouseMoveEvent
         # 创建Edit_CmdList鼠标按下信号
@@ -143,23 +158,12 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 if not json_file == "":
                     message = hci_parse_with_json(json_file, json_data)
                     if message != "":
-                        self.Edit_CmdDetail.setText(message)
-                    # with open(json_file, 'r', encoding='utf-8') as file:
-                    #     hci_info = json.load(file)
-                    # for property in hci_info['hci_commands']:
-                    #     for command in property['command']:
-                    #         for key in all_keys:
-                    #             if command['name'] == key:
-                    #                 self.Edit_CmdDetail.clear()
-
-                    #                 # message += hex_string
-                    #                 # self.Edit_cmdData.append()
-                    #                 self.Edit_CmdDetail.append(opcode)
+                        self.Edit_CmdDetail.setText(' '.join([message[i:i+2] for i in range(0, len(message), 2)]))
         except json.JSONDecodeError:
             return
 
-    def Edit_CmdDetail_Clear(self):
-        self.Edit_CmdDetail.clear()
+    def Edit_Log_Clear(self):
+        self.EditLog_logger.clear()
 
     def cmdmouseDoubleClickEvent(self, event):
         """指令列表窗口鼠标双击事件处理函数"""
@@ -251,11 +255,11 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         while len(hex_string) % 2 != 0:
             hex_string = '0' + hex_string
         # 字符串转16进制数据
-        hex_data = bytes.fromhex(hex_string)
-        self.logger.info(f"Tx : {' '.join(f'{byte:02x}' for byte in hex_data)}")
+        self.hci_thread.txbuf = bytes.fromhex(hex_string)
+        self.hci_thread.hci_tx_thread()
 
-        if self.com.is_open():
-            self.com.send_data(hex_data)
+        # if self.serial.is_open():
+        #     self.serial.send_data(hex_data)
 
     def EditLog_Show(self, data):
         # self.Edit_Log.append("收<-" + data.data().decode('utf-8'))
@@ -269,7 +273,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         if text == "打开设备":
             if not portName == "":
                 try:
-                    self.com.open(portName, portBaud)
+                    self.serial.open(portName, portBaud)
                     self.Btn_OpenDevice.setText("关闭设备")
                     self.ComboBox_DeviceList.setEnabled(False)
                     self.com_rx_check.start(5)
@@ -282,7 +286,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         else:
             if not portName == "":
                 self.com_rx_check.stop()
-                self.com.close()
+                self.serial.close()
                 self.Btn_OpenDevice.setText("打开设备")
                 self.ComboBox_DeviceList.setEnabled(True)
 
@@ -296,9 +300,9 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 self.ComboBox_DeviceList.addItem(port_name)
         else:
             if not self.ComboBox_DeviceList.currentText() in [port.portName() for port in current_ports]:
-                if self.com.com.portName() == self.ComboBox_DeviceList.currentText():
-                    if self.com.is_open():
-                        self.com.close()
+                if self.serial.com.portName() == self.ComboBox_DeviceList.currentText():
+                    if self.serial.is_open():
+                        self.serial.close()
                         self.openDevice()
                     self.ComboBox_DeviceList.removeItem(self.ComboBox_DeviceList.currentIndex())
                     QMessageBox.information(self, '消息', '串口已拔出', QMessageBox.Yes)
@@ -308,11 +312,11 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                     self.ComboBox_DeviceList.addItem(port_name)
 
     def serial_receive_data(self):
-        if self.com.is_open():
-            data_len = self.com.com.bytesAvailable()
+        if self.serial.is_open():
+            data_len = self.serial.com.bytesAvailable()
             if data_len > 0:
                 print(f"Data avalable: {data_len} bytes")
-                data = self.com.com.read(data_len)
+                data = self.serial.com.read(data_len)
                 # print(f"Received data: {data.decode('utf-8', 'ignore')}")
                 self.EditLog_Show(data)
 
