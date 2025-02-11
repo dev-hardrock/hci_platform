@@ -13,14 +13,18 @@ from src.log import *
 import json
 
 class My_Hci_Drv(Hci_Drv):
-    def __init__(self):
+    def __init__(self, send_callback=None, recv_callback=None):
         super().__init__()
+        self.send_callback = send_callback
+        self.recv_callback = recv_callback
 
-    def send(self):
-        pass
+    def send(self, buf):
+        if self.send_callback:
+            self.send_callback(buf)
 
     def recv(self):
-        pass
+        if self.recv_callback:
+            self.recv_callback()
 
 class QTextEditLogger(logging.Handler, QTextEdit):
     def __init__(self, parent):

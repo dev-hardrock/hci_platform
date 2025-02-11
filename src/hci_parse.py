@@ -20,15 +20,20 @@ def hci_parse_with_json(json_file, json_data):
             if command['name'] in json_data:
                 hci_type = H4_CMD
                 message += convert_hex_string(command['opcode'])
-                if 'parameters' in command:
+                parameters_total_len = command['parameter_total_len']
+                if parameters_total_len != 0 :
+                    parameter_data=""
                     for argument in command['parameters']:
                         if argument['name'] in json_data[command['name']]:
                             unit = argument['unit']
                             unit_len = argument['size']
                             data = json_data[command['name']][argument['name']]
-                            message += convert_hex_string_with_type(data, unit, unit_len)
+                            parameter_data += convert_hex_string_with_type(data, unit, unit_len)
+                    parameters_total_len = len(parameter_data) // 2
+                    message += ''.join(f"{parameters_total_len:02x}")
+                    message += parameter_data
                 else:
-                    print(message)
+                    message +=''.join(f"{parameters_total_len:02x}")
             else:
                 continue
 

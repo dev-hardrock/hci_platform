@@ -9,6 +9,7 @@
         {
           "name": "HCI_Inquiry",
           "opcode": "0x0401",
+          "parameter_total_len": 5,
           "parameters": [
             {
               "name": "LAP",
@@ -29,11 +30,13 @@
         },
         {
           "name": "HCI_Inquiry_Cancel",
-          "opcode": "0x0402"
+          "opcode": "0x0402",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Periodic_Inquiry_Mode",
           "opcode": "0x0403",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Max_Period_Length",
@@ -64,11 +67,13 @@
         },
         {
           "name": "HCI_Exit_Periodic_Inquiry_Mode",
-          "opcode": "0x0404"
+          "opcode": "0x0404",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Create_Connection",
           "opcode": "0x0405",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -105,6 +110,7 @@
         {
           "name": "HCI_Disconnect",
           "opcode": "0x0406",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -121,6 +127,7 @@
         {
           "name": "HCI_Create_Connection_Cancel",
           "opcode": "0x0408",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -132,6 +139,7 @@
         {
           "name": "HCI_Accept_Connection_Request",
           "opcode": "0x0409",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -148,6 +156,7 @@
         {
           "name": "HCI_Reject_Connection_Request",
           "opcode": "0x040a",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -164,6 +173,7 @@
         {
           "name": "HCI_Link_Key_Request_Reply",
           "opcode": "0x040b",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -180,6 +190,7 @@
         {
           "name": "HCI_Link_Key_Request_Negative_Reply",
           "opcode": "0x040c",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -191,6 +202,7 @@
         {
           "name": "HCI_PIN_Code_Request_Reply",
           "opcode": "0x040d",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -212,6 +224,7 @@
         {
           "name": "HCI_PIN_Code_Request_Negative_Reply",
           "opcode": "0x040e",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -223,6 +236,7 @@
         {
           "name": "HCI_Change_Connection_Packet_Type",
           "opcode": "0x040f",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -239,6 +253,7 @@
         {
           "name": "HCI_Authentication_Requested",
           "opcode": "0x0411",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -250,6 +265,7 @@
         {
           "name": "HCI_Set_Connection_Encryption",
           "opcode": "0x0413",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -266,6 +282,7 @@
         {
           "name": "HCI_Change_Connection_Link_Key",
           "opcode": "0x0415",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -277,6 +294,7 @@
         {
           "name": "HCI_Link_Key_Selection",
           "opcode": "0x0417",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Key_Flag",
@@ -288,6 +306,7 @@
         {
           "name": "HCI_Remote_Name_Request",
           "opcode": "0x0419",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -314,6 +333,7 @@
         {
           "name": "HCI_Remote_Name_Request_Cancel",
           "opcode": "0x041a",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -325,6 +345,7 @@
         {
           "name": "HCI_Read_Remote_Supported_Features",
           "opcode": "0x041b",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -336,6 +357,7 @@
         {
           "name": "HCI_Read_Remote_Extended_Features",
           "opcode": "0x041c",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -352,6 +374,7 @@
         {
           "name": "HCI_Read_Remote_Version_Information",
           "opcode": "0x041d",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -363,6 +386,7 @@
         {
           "name": "HCI_Read_Clock_Offset",
           "opcode": "0x041f",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -374,6 +398,7 @@
         {
           "name": "HCI_Read_LMP_Handle",
           "opcode": "0x0420",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -385,6 +410,7 @@
         {
           "name": "HCI_Setup_Synchronous_Connection",
           "opcode": "0x0428",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -426,6 +452,7 @@
         {
           "name": "HCI_Accept_Synchronous_Connection_Request",
           "opcode": "0x0429",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -467,6 +494,7 @@
         {
           "name": "HCI_Reject_Synchronous_Connection_Request",
           "opcode": "0x042a",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -483,6 +511,7 @@
         {
           "name": "HCI_IO_Capability_Request_Reply",
           "opcode": "0x042b",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -509,6 +538,7 @@
         {
           "name": "HCI_User_Confirmation_Request_Reply",
           "opcode": "0x042c",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -520,6 +550,7 @@
         {
           "name": "HCI_User_Confirmation_Request_Negative_Reply",
           "opcode": "0x042d",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -531,6 +562,7 @@
         {
           "name": "HCI_User_Passkey_Request_Reply",
           "opcode": "0x042e",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -547,6 +579,7 @@
         {
           "name": "HCI_User_Passkey_Request_Negative_Reply",
           "opcode": "0x042f",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -558,6 +591,7 @@
         {
           "name": "HCI_Remote_OOB_Data_Request_Reply",
           "opcode": "0x0430",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -579,6 +613,7 @@
         {
           "name": "HCI_Remote_OOB_Data_Request_Negative_Reply",
           "opcode": "0x0433",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -590,6 +625,7 @@
         {
           "name": "HCI_IO_Capability_Request_Negative_Reply",
           "opcode": "0x0434",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -606,6 +642,7 @@
         {
           "name": "HCI_Enhanced_Setup_Synchronous_Connection",
           "opcode": "0x043d",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -732,6 +769,7 @@
         {
           "name": "HCI_Enhanced_Accept_Synchronous_Connection_Request",
           "opcode": "0x043e",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -858,6 +896,7 @@
         {
           "name": "HCI_Truncated_Page",
           "opcode": "0x043f",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -879,6 +918,7 @@
         {
           "name": "HCI_Truncated_Page_Cancel",
           "opcode": "0x0440",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -890,6 +930,7 @@
         {
           "name": "HCI_Set_Connectionless_Peripheral_Broadcast",
           "opcode": "0x0441",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Enable",
@@ -931,6 +972,7 @@
         {
           "name": "HCI_Set_Connectionless_Peripheral_Broadcast_Receive",
           "opcode": "0x0442",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Enable",
@@ -991,11 +1033,13 @@
         },
         {
           "name": "HCI_Start_Synchronization_Train",
-          "opcode": "0x0443"
+          "opcode": "0x0443",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Receive_Synchronization_Train",
           "opcode": "0x0444",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -1022,6 +1066,7 @@
         {
           "name": "HCI_Remote_OOB_Extended_Data_Request_Reply",
           "opcode": "0x0445",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -1060,6 +1105,7 @@
         {
           "name": "HCI_Hold_Mode",
           "opcode": "0x0801",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1081,6 +1127,7 @@
         {
           "name": "HCI_Sniff_Mode",
           "opcode": "0x0803",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1112,6 +1159,7 @@
         {
           "name": "HCI_Exit_Sniff_Mode",
           "opcode": "0x0804",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1123,6 +1171,7 @@
         {
           "name": "HCI_QoS_Setup",
           "opcode": "0x0807",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1164,6 +1213,7 @@
         {
           "name": "HCI_Role_Discovery",
           "opcode": "0x0809",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1175,6 +1225,7 @@
         {
           "name": "HCI_Switch_Role",
           "opcode": "0x080b",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "BD_ADDR",
@@ -1191,6 +1242,7 @@
         {
           "name": "HCI_Read_Link_Policy_Settings",
           "opcode": "0x080c",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1202,6 +1254,7 @@
         {
           "name": "HCI_Write_Link_Policy_Settings",
           "opcode": "0x080d",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1217,11 +1270,13 @@
         },
         {
           "name": "HCI_Read_Default_Link_Policy_Settings",
-          "opcode": "0x080e"
+          "opcode": "0x080e",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Write_Default_Link_Policy_Settings",
           "opcode": "0x080f",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Default_Link_Policy_Settings",
@@ -1233,6 +1288,7 @@
         {
           "name": "HCI_Flow_Specification",
           "opcode": "0x0810",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1279,6 +1335,7 @@
         {
           "name": "HCI_Sniff_Subrating",
           "opcode": "0x0811",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1312,6 +1369,7 @@
         {
           "name": "HCI_Set_Event_Mask",
           "opcode": "0x0c01",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Event_Mask",
@@ -1322,11 +1380,13 @@
         },
         {
           "name": "HCI_Reset",
-          "opcode": "0x0c03"
+          "opcode": "0x0c03",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Set_Event_Filter",
           "opcode": "0x0c05",
+          "parameter_total_len": 8,
           "parameters": [
             {
               "name": "Filter_Type",
@@ -1346,69 +1406,74 @@
           ]
         },
         {
-            "name":"HCI_Flush",
-            "opcode":"0x0c08",
-            "parameters":[
-                {
-                    "name":"Connection_Handle",
-                    "unit":"octet",
-                    "size":2
-                }
-            ]
+          "name": "HCI_Flush",
+          "opcode": "0x0c08",
+          "parameter_total_len": 1,
+          "parameters": [
+            {
+              "name": "Connection_Handle",
+              "unit": "octet",
+              "size": 2
+            }
+          ]
         },
         {
-            "name":"HCI_Read_PIN_Type",
-            "opcode":"0x0c09"
+          "name": "HCI_Read_PIN_Type",
+          "opcode": "0x0c09",
+          "parameter_total_len": 0
         },
         {
-            "name":"HCI_Write_PIN_Type",
-            "opcode":"0x0c0a",
-            "parameters":[
-                {
-                    "name":"PIN_Type",
-                    "unit":"octet",
-                    "size":1
-                }
-            ]
+          "name": "HCI_Write_PIN_Type",
+          "opcode": "0x0c0a",
+          "parameter_total_len": 1,
+          "parameters": [
+            {
+              "name": "PIN_Type",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
         },
         {
-            "name":"HCI_Read_Stored_Link_Key",
-            "opcode":"0x0c0d",
-            "parameters":[
-                {
-                    "name":"BD_ADDR",
-                    "unit":"octet",
-                    "size":6
-                },
-                {
-                    "name":"Read_All",
-                    "unit":"octet",
-                    "size":1
-                }
-            ]
+          "name": "HCI_Read_Stored_Link_Key",
+          "opcode": "0x0c0d",
+          "parameter_total_len": 1,
+          "parameters": [
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "size": 6
+            },
+            {
+              "name": "Read_All",
+              "unit": "octet",
+              "size": 1
+            }
+          ]
         },
         {
-            "name":"HCI_Write_Stored_Link_Key",
-            "opcode":"0x0c11",
-            "parameters":[
-                {
-                    "name":"Num_Keys_To_Write",
-                    "unit":"octet",
-                    "size":"1"
-                },
-                {
-                    "name":"BD_ADDR",
-                    "unit":"octet",
-                    "//size":"Num_Keys_To_Write * 6",
-                    "size":"1"
-                },
-                {
-                    "name":"Link_Key",
-                    "unit":"octet",
-                    "//size":"Num_Keys_To_Write * 16",
-                    "size":"1"
-                }
-            ]
+          "name": "HCI_Write_Stored_Link_Key",
+          "opcode": "0x0c11",
+          "parameter_total_len": 1,
+          "parameters": [
+            {
+              "name": "Num_Keys_To_Write",
+              "unit": "octet",
+              "size": 1
+            },
+            {
+              "name": "BD_ADDR",
+              "unit": "octet",
+              "unit_len": 16,
+              "size": "@Num_Keys_To_Write"
+            },
+            {
+              "name": "Link_Key",
+              "unit": "octet",
+              "unit_len": 16,
+              "size": "@Num_Keys_To_Write"
+            }
+          ]
         }
       ]
     },
@@ -1419,19 +1484,23 @@
       "command": [
         {
           "name": "HCI_Read_Local_Version_Information",
-          "opcode": "0x1001"
+          "opcode": "0x1001",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Supported_Commands",
-          "opcode": "0x1002"
+          "opcode": "0x1002",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Supported_Features",
-          "opcode": "0x1003"
+          "opcode": "0x1003",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Extended_Features",
           "opcode": "0x1004",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Page_Number",
@@ -1442,35 +1511,43 @@
         },
         {
           "name": "HCI_Read_Buffer_Size",
-          "opcode": "0x1005"
+          "opcode": "0x1005",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_BD_ADDR",
-          "opcode": "0x1009"
+          "opcode": "0x1009",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Data_Block_Size",
-          "opcode": "0x100a"
+          "opcode": "0x100a",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Supported_Codecs_V1",
-          "opcode": "0x100b"
+          "opcode": "0x100b",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Simple_Pairing_Options",
-          "opcode": "0x100c"
+          "opcode": "0x100c",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Supported_Codecs_V2",
-          "opcode": "0x100d"
+          "opcode": "0x100d",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Supported_Codec_Capabilities",
-          "opcode": "0x100e"
+          "opcode": "0x100e",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Read_Local_Supported_Controller_Delay",
           "opcode": "0x100f",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Codec_ID",
@@ -1494,7 +1571,9 @@
             },
             {
               "name": "Codec_configuration",
-              "unit": "octet"
+              "unit": "octet",
+              "unit_len": 1,
+              "size": "@Codec_Configuration_Length"
             }
           ]
         }
@@ -1508,6 +1587,7 @@
         {
           "name": "HCI_Read_Failed_Contact_Counter",
           "opcode": "0x1401",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "handle",
@@ -1519,6 +1599,7 @@
         {
           "name": "HCI_Reset_Failed_Contact_Counter",
           "opcode": "0x1402",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "handle",
@@ -1530,6 +1611,7 @@
         {
           "name": "HCI_Read_Link_Quality",
           "opcode": "0x1403",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "handle",
@@ -1541,6 +1623,7 @@
         {
           "name": "HCI_Read_RSSI",
           "opcode": "0x1405",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "handle",
@@ -1552,6 +1635,7 @@
         {
           "name": "HCI_Read_AFH_Channel_Map",
           "opcode": "0x1406",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1563,6 +1647,7 @@
         {
           "name": "HCI_Read_Clock",
           "opcode": "0x1407",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1579,6 +1664,7 @@
         {
           "name": "HCI_Read_Encryption_Key_Size",
           "opcode": "0x1408",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1589,11 +1675,13 @@
         },
         {
           "name": "HCI_Get_MWS_Transport_Layer_Configuration",
-          "opcode": "0x140c"
+          "opcode": "0x140c",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Set_Triggered_Clock_Capture",
           "opcode": "0x140d",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
@@ -1631,11 +1719,13 @@
       "command": [
         {
           "name": "HCI_Read_Loopback_Mode",
-          "opcode": "0x1801"
+          "opcode": "0x1801",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Write_Loopback_Mode",
           "opcode": "0x1802",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Loopback_Mode",
@@ -1646,11 +1736,13 @@
         },
         {
           "name": "HCI_Enable_Implementation_Under_Test_Mode",
-          "opcode": "0x1803"
+          "opcode": "0x1803",
+          "parameter_total_len": 0
         },
         {
           "name": "HCI_Write_Simple_Pairing_Debug_Mode",
           "opcode": "0x1804",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Simple_Pairing_Debug_Mode",
@@ -1662,6 +1754,7 @@
         {
           "name": "HCI_Write_Secure_Connections_Test_Mode",
           "opcode": "0x180a",
+          "parameter_total_len": 1,
           "parameters": [
             {
               "name": "Connection_Handle",
