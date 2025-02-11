@@ -12,7 +12,8 @@ from src.hci_parse import *
 from src.log import *
 import json
 
-class My_Hci_Drv(Hci_Drv):
+
+class Hci_Drv_H4(Hci_Drv):
     def __init__(self, send_callback=None, recv_callback=None):
         super().__init__()
         self.send_callback = send_callback
@@ -25,9 +26,6 @@ class My_Hci_Drv(Hci_Drv):
     def recv(self):
         if self.recv_callback:
             self.recv_callback()
-
-
-
 
 
 # 继承两个父类
@@ -64,25 +62,14 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 初始化串口波特率配置
         self.ComboBox_SerialBaudList_Init()
 
-        # 开始logging日志设置
-        # self.logger = logging.getLogger(__name__)
-        # self.logger.setLevel(logging.DEBUG)
-
-        # 创建QTextEdit日志处理器
-        # self.EditLog_logger = QTextEditLogger(self.Edit_Log)
-        # self.EditLog_logger.setFormatter(CustomFormatter('%(asctime)s [%(levelname)s] : %(message)s'))
-        # self.logger.addHandler(self.EditLog_logger)
-
-        # 将默认的日志输出重定向到 QTextEdit
-        # logging.basicConfig(level=logging.DEBUG)
-
-        self.hci_thread = Hci_Thread(My_Hci_Drv)
+        self.drv = Hci_Drv_H4(send_callback=self.SerialTx, recv_callback=self.SerialRx)
+        self.hci_thread = Hci_Thread(self.drv)
 
         Custom_Log(self.Edit_Log)
 
         # 定义一个定时器，5ms定时检测串口接收数据
-        self.com_rx_check = QTimer(self)
-        self.com_rx_check.timeout.connect(self.serial_receive_data)
+        self.hci_thread_timer = QTimer(self)
+        self.hci_thread_timer.timeout.connect(self.hci_thread_work)
 
         # 定义一个定时器，1s定时检测串口列表
         self.timer = QTimer(self)
@@ -252,9 +239,6 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         self.hci_thread.txbuf = bytes.fromhex(hex_string)
         self.hci_thread.hci_tx_thread()
 
-        # if self.serial.is_open():
-        #     self.serial.send_data(hex_data)
-
     def EditLog_Show(self, data):
         # self.Edit_Log.append("收<-" + data.data().decode('utf-8'))
         self.logger.info(f"Rx : {' '.join(f'{byte:02x}' for byte in data)}")  # 使用 logger 记录接收到的数据
@@ -305,14 +289,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 if port_name not in [self.ComboBox_DeviceList.itemText(i) for i in range(self.ComboBox_DeviceList.count())]:
                     self.ComboBox_DeviceList.addItem(port_name)
 
-    def serial_receive_data(self):
-        if self.serial.is_open():
-            data_len = self.serial.com.bytesAvailable()
-            if data_len > 0:
-                print(f"Data avalable: {data_len} bytes")
-                data = self.serial.com.read(data_len)
-                # print(f"Received data: {data.decode('utf-8', 'ignore')}")
-                self.EditLog_Show(data)
+    def hci_thread_work(self):
+        self.hci_thread.hci_rx_thread()
 
     def ComboBox_TestFile_index_update(self):
         file_name = self.ComboBox_TestFile.currentText()
@@ -332,3 +310,10 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def closeEvent(self, event):
         """关闭串口时确保关闭串口"""
         return super().closeEvent(event)
+
+    def SerialTx(self, buf):
+        if self.serial.is_open():
+            self.serial.send_data(buf)
+
+    def SerialRx(self):
+        pass

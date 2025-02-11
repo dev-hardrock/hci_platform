@@ -33,17 +33,13 @@ class Hci_Drv(ABC):
 
 
 class Hci_Thread:
-    def __init__(self, drv: Type) -> None:
-        if not issubclass(drv, Hci_Drv):
-            raise ValueError("参数必须是Hci_Drv的子类")
+    def __init__(self, drv) -> None:
         self.txbuf = None
         self.tx_type = HCI_NONE
-        self.hci_drv = drv()
+        self.hci_drv = drv
 
     def hci_tx_thread(self):
         if self.txbuf:
-            # if self.tx_type != HCI_NONE:
-            #     self.tx_type = self.txbuf[0]
             self.hci_drv.send(self.txbuf)
             logger.info(f"{self.get_packet_type_str(self.txbuf[0], True)}{' '.join(f'{byte:02x}' for byte in self.txbuf)}")
 
