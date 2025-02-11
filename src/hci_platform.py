@@ -1,7 +1,7 @@
 import subprocess
 import sys
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QWidget, QMessageBox, QTextEdit
+from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
 from src.serialmanager import *
 from src.serialmanager import SerialManager
@@ -26,20 +26,8 @@ class My_Hci_Drv(Hci_Drv):
         if self.recv_callback:
             self.recv_callback()
 
-class QTextEditLogger(logging.Handler, QTextEdit):
-    def __init__(self, parent):
-        super().__init__()
-        self.widget = QTextEdit(parent)
-        self.widget.setReadOnly(True)
-        self.widget.resize(parent.size())
 
-    def emit(self, record):
-        log = self.format(record)
-        self.widget.append(log)
-        self.widget.ensureCursorVisible()
 
-    def clear(self):
-        self.widget.clear()
 
 
 # 继承两个父类
@@ -77,18 +65,20 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         self.ComboBox_SerialBaudList_Init()
 
         # 开始logging日志设置
-        self.logger = logging.getLogger(__name__)
-        self.logger.setLevel(logging.DEBUG)
+        # self.logger = logging.getLogger(__name__)
+        # self.logger.setLevel(logging.DEBUG)
 
         # 创建QTextEdit日志处理器
-        self.EditLog_logger = QTextEditLogger(self.Edit_Log)
-        self.EditLog_logger.setFormatter(CustomFormatter('%(asctime)s [%(levelname)s] : %(message)s'))
-        self.logger.addHandler(self.EditLog_logger)
+        # self.EditLog_logger = QTextEditLogger(self.Edit_Log)
+        # self.EditLog_logger.setFormatter(CustomFormatter('%(asctime)s [%(levelname)s] : %(message)s'))
+        # self.logger.addHandler(self.EditLog_logger)
 
         # 将默认的日志输出重定向到 QTextEdit
-        logging.basicConfig(level=logging.DEBUG)
+        # logging.basicConfig(level=logging.DEBUG)
 
         self.hci_thread = Hci_Thread(My_Hci_Drv)
+
+        Custom_Log(self.Edit_Log)
 
         # 定义一个定时器，5ms定时检测串口接收数据
         self.com_rx_check = QTimer(self)

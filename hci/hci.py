@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Type
 import logging
 
+logger = logging.getLogger(__name__)
 
 HCI_NONE = 0
 HCI_CMD = 1
@@ -38,14 +39,13 @@ class Hci_Thread:
         self.txbuf = None
         self.tx_type = HCI_NONE
         self.hci_drv = drv()
-        self.logger = logging.getLogger(__name__)
 
     def hci_tx_thread(self):
         if self.txbuf:
             # if self.tx_type != HCI_NONE:
             #     self.tx_type = self.txbuf[0]
             self.hci_drv.send(self.txbuf)
-            self.logger.info(f"Tx : {' '.join(f'{byte:02x}' for byte in self.txbuf)}")
+            logger.info(f"{self.get_packet_type_str(self.txbuf[0], True)}{' '.join(f'{byte:02x}' for byte in self.txbuf)}")
 
     def hci_rx_thread(self):
         pass
