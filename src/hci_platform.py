@@ -3,37 +3,23 @@ import sys
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QWidget, QMessageBox
 from PyQt5.QtCore import Qt, QTimer, QFile, QIODevice
-from src.serialmanager import *
-from src.serialmanager import SerialManager
 from PyQt5.QtGui import QCursor, QIcon, QColor, QTextFormat
+from PyQt5.QtSerialPort import QSerialPortInfo, QSerialPort
 from generated.hci_platform import Ui_Hci_PlatForm
-from hci.hci import Hci_Thread, Hci_Drv
 from src.hci_parse import *
 from src.log import *
 import json
 
 
-class Hci_Drv_H4(Hci_Drv):
-    def __init__(self, send_callback=None, recv_callback=None):
-        super().__init__()
-        self.send_callback = send_callback
-        self.recv_callback = recv_callback
-
-    def send(self, buf):
-        if self.send_callback:
-            self.send_callback(buf)
-
-    def recv(self):
-        if self.recv_callback:
-            self.recv_callback()
-
+def get_available_port():
+    """获取可用的串口号"""
+    ports = QSerialPortInfo.availablePorts()
+    return ports
 
 # 继承两个父类
 class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
     def __init__(self):
         super().__init__()
-
-        self.cur_file = None
         self.setupUi(self)
 
         # 重命名上位机名称
@@ -48,10 +34,15 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
         # 初始化
         self.isMousePressed = False
-        self.serial = SerialManager(callback=self.EditLog_Show)
-
         # 开启鼠标跟踪
         self.Edit_CmdList.viewport().setCursor(QCursor(Qt.ArrowCursor))
+
+
+        self.serial = None
+
+        # 加载hci指令文件
+        self.hci_file = None
+
 
         # 查找上位机同级目录下测试文件
         self.ComboBox_TestFile_Init()
@@ -62,14 +53,11 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         # 初始化串口波特率配置
         self.ComboBox_SerialBaudList_Init()
 
-        self.drv = Hci_Drv_H4(send_callback=self.SerialTx, recv_callback=self.SerialRx)
-        self.hci_thread = Hci_Thread(self.drv)
-
         Custom_Log(self.Edit_Log)
 
+        self.logger = logging.getLogger(__name__)
+
         # 定义一个定时器，5ms定时检测串口接收数据
-        self.hci_thread_timer = QTimer(self)
-        self.hci_thread_timer.timeout.connect(self.hci_thread_work)
 
         # 定义一个定时器，1s定时检测串口列表
         self.timer = QTimer(self)
@@ -79,8 +67,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
     def ComboBox_TestFile_Load(self):
         """加载指令文件"""
-        if not self.cur_file == "":
-            with open(self.cur_file, 'r', encoding='utf-8') as file:
+        if not self.hci_file == "":
+            with open(self.hci_file, 'r', encoding='utf-8') as file:
                 cmdlist = json.load(file)
             self.Edit_CmdList.clear()
             for command in cmdlist['hci_commands']:
@@ -93,7 +81,7 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         jsonfiles = find_files(self.topdir, ".json")
         for file in jsonfiles:
             self.ComboBox_TestFile.addItem(os.path.basename(file))
-        self.cur_file = self.ComboBox_TestFile.currentText()
+        self.hci_file = self.ComboBox_TestFile.currentText()
 
     def ComboBox_SerialBaudList_Init(self):
         """初始化串口波特率列表"""
@@ -144,7 +132,9 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
             return
 
     def Edit_Log_Clear(self):
-        self.EditLog_logger.clear()
+        for handler in logging.getLogger().handlers:
+            if isinstance(handler, QTextEditLogger):
+                handler.clear()
 
     def cmdmouseDoubleClickEvent(self, event):
         """指令列表窗口鼠标双击事件处理函数"""
@@ -165,8 +155,8 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         if event.pos().y() <= text_height:
             if line >= 0:
                 cmd = cursor.block().text()
-                if not self.cur_file == "":
-                    with open(self.cur_file, 'r', encoding='utf-8') as file:
+                if not self.hci_file == "":
+                    with open(self.hci_file, 'r', encoding='utf-8') as file:
                         hci_info = json.load(file)
                     for attr in hci_info['hci_commands']:
                         for command in attr['command']:
@@ -236,12 +226,20 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         while len(hex_string) % 2 != 0:
             hex_string = '0' + hex_string
         # 字符串转16进制数据
-        self.hci_thread.txbuf = bytes.fromhex(hex_string)
-        self.hci_thread.hci_tx_thread()
+        byte_data = bytes.fromhex(hex_string)
 
-    def EditLog_Show(self, data):
-        # self.Edit_Log.append("收<-" + data.data().decode('utf-8'))
-        self.logger.info(f"Rx : {' '.join(f'{byte:02x}' for byte in data)}")  # 使用 logger 记录接收到的数据
+        # 串口发送数据
+        if self.serial is not None and self.serial.isOpen():
+            chunk_size = 1024
+            for i in range(0, len(byte_data), chunk_size):
+                chunk = byte_data[i:i + chunk_size]
+                bytes_written = self.serial.write(chunk)
+                if bytes_written == -1:
+                    print("Error writing to serial port")
+                    break
+                self.serial.flush()
+        buf = byte_data[1:]
+        self.logger.info(f"{get_packet_type_str(byte_data[0], True)}{' '.join(f'{byte:02x}' for byte in buf)}")
 
     def openDevice(self):
         """打开设备按键单击处理函数"""
@@ -251,22 +249,64 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
         if text == "打开设备":
             if not portName == "":
                 try:
-                    self.serial.open(portName, portBaud)
+                    self.serial = QSerialPort()
+                    if self.serial.isOpen():
+                        raise Exception("串口已打开")  # 手动抛出异常
+                    self.serial.setPortName(portName)
+                    self.serial.setBaudRate(portBaud)
+                    self.serial.setDataBits(QSerialPort.Data8)
+                    self.serial.setParity(QSerialPort.NoParity)
+                    self.serial.setStopBits(QSerialPort.OneStop)
+                    self.serial.setFlowControl(QSerialPort.HardwareControl)
+                    self.serial.readyRead.connect(self.hci_rx_polling)
+                    if not self.serial.open(QSerialPort.ReadWrite):
+                        raise Exception("串口打开失败")  # 手动抛出异常
                     self.Btn_OpenDevice.setText("关闭设备")
                     self.ComboBox_DeviceList.setEnabled(False)
-                    self.com_rx_check.start(5)
+                    self.ComboBox_SerialBaudList.setEnabled(False)
+                    # self.com_rx_check.start(5)
                 except Exception as e:
+                    self.serial = None
                     QMessageBox.warning(self, '错误', str(e))
                     self.Btn_OpenDevice.setText("打开设备")
                     self.ComboBox_DeviceList.setEnabled(True)
+                    self.ComboBox_SerialBaudList.setEnabled(True)
             else:
                 QMessageBox.warning(None, "警告", "请插入设备!")
         else:
             if not portName == "":
-                self.com_rx_check.stop()
+                # self.com_rx_check.stop()
                 self.serial.close()
+                self.serial = None
                 self.Btn_OpenDevice.setText("打开设备")
                 self.ComboBox_DeviceList.setEnabled(True)
+                self.ComboBox_SerialBaudList.setEnabled(True)
+
+    def hci_rx_polling(self):
+        hci_type = self.serial.read(1)
+
+        if hci_type[0] == HCI_EVT:
+            while True:
+                if self.serial.bytesAvailable() >= 2:
+                    break
+            evt_code = self.serial.read(1)
+            data_len = self.serial.read(1)
+            int_data_len = int.from_bytes(data_len, byteorder='little')
+            while True:
+                if self.serial.bytesAvailable() >= int_data_len:
+                    break
+            data = self.serial.read(int_data_len)
+            message = evt_code + data_len + data
+            self.logger.info(
+                f"{get_packet_type_str(hci_type[0], False)}{' '.join(f'{byte:02x}' for byte in message)}")
+        else:
+            self.logger.warning("unkown type")
+            return
+
+
+
+
+
 
     def refresh_serial_ports(self):
         """刷新可用串口号列表并填充到ComboBox中"""
@@ -278,10 +318,11 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 self.ComboBox_DeviceList.addItem(port_name)
         else:
             if not self.ComboBox_DeviceList.currentText() in [port.portName() for port in current_ports]:
-                if self.serial.com.portName() == self.ComboBox_DeviceList.currentText():
-                    if self.serial.is_open():
+                if self.serial is not None and self.serial.portName() == self.ComboBox_DeviceList.currentText():
+                    if self.serial.isOpen():
                         self.serial.close()
                         self.openDevice()
+                    self.serial = None()
                     self.ComboBox_DeviceList.removeItem(self.ComboBox_DeviceList.currentIndex())
                     QMessageBox.information(self, '消息', '串口已拔出', QMessageBox.Yes)
             for port in current_ports:
@@ -289,14 +330,11 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
                 if port_name not in [self.ComboBox_DeviceList.itemText(i) for i in range(self.ComboBox_DeviceList.count())]:
                     self.ComboBox_DeviceList.addItem(port_name)
 
-    def hci_thread_work(self):
-        self.hci_thread.hci_rx_thread()
-
     def ComboBox_TestFile_index_update(self):
         file_name = self.ComboBox_TestFile.currentText()
         file = QFile(file_name)
         if file.open(QIODevice.ReadOnly):
-            self.cur_file = file_name
+            self.hci_file = file_name
             self.ComboBox_TestFile_Load()
         else:
             QMessageBox.warning(self, '警告', '文件打开失败', QMessageBox.Yes)
@@ -309,11 +347,5 @@ class Hci_PlatForm(QWidget, Ui_Hci_PlatForm):
 
     def closeEvent(self, event):
         """关闭串口时确保关闭串口"""
+        self.timer.stop()
         return super().closeEvent(event)
-
-    def SerialTx(self, buf):
-        if self.serial.is_open():
-            self.serial.send_data(buf)
-
-    def SerialRx(self):
-        pass

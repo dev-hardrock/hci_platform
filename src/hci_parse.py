@@ -7,6 +7,12 @@ H4_SCO = '03'
 H4_EVT = '04'
 H4_ISO = '05'
 
+HCI_CMD = 1
+HCI_ACL = 2
+HCI_SCO = 3
+HCI_EVT = 4
+HCI_ISO = 5
+
 
 def hci_parse_with_json(json_file, json_data):
     message = ''
@@ -38,3 +44,22 @@ def hci_parse_with_json(json_file, json_data):
                 continue
 
     return  hci_type + message
+
+def get_packet_type_str(hci_type, issue):
+    if issue:
+        hex_str = "=> "
+    else:
+        hex_str = "<= "
+    if hci_type == HCI_CMD:
+        return "CMD " + hex_str
+    elif hci_type == HCI_ACL:
+        return "ACL " + hex_str
+    elif hci_type == HCI_SCO:
+        return "ACL " + hex_str
+    elif hci_type == HCI_EVT:
+        return "EVT " + hex_str
+    elif hci_type == HCI_ISO:
+        return "ISO " + hex_str
+    else:
+        return "Unknown " + hex_str
+
